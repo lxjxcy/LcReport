@@ -100,11 +100,11 @@ import goday from "../../mixins/goday"
 					orderSource:this.$route.query.title,
 				}
 				if(this.$store.state.saveData.showDate==1){
-					var url="/channel/querySecMonth"
+					var url="/report/channel/querySecMonth"
 				}
 				if(this.$store.state.saveData.showDate==2){
 				
-					var url="/channel/querySecWeek"
+					var url="/report/channel/querySecWeek"
 				
 				}
 				
@@ -129,11 +129,11 @@ import goday from "../../mixins/goday"
 					orderSource:this.$route.query.title,
 				}
 				if(this.$store.state.saveData.showDate==1){
-					var url="/channel/querySecMonth"
+					var url="/report/channel/querySecMonth"
 				}
 				if(this.$store.state.saveData.showDate==2){
 				
-					var url="/channel/querySecWeek"
+					var url="/report/channel/querySecWeek"
 				
 				}
 				var ifdata=false;

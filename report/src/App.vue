@@ -95,5 +95,7 @@ ul{
 	.ivu-btn>.ivu-icon{
 		font-size: 16px !important;
 	}
-
+/* .echartbox{
+	margin:15px;
+} */
 </style>

@@ -1,9 +1,9 @@
 <template>
 	<div class="supplier_name all">
-		<orderTop v-on:getTitle="showParam" v-on:getClear="clearDate" v-on:getExcel="downExcel" v-on:getMonth="showMonth"  v-on:getDateparam="showSend"></orderTop>
+		<orderTop v-on:clearPage="showPage" v-on:getTitle="showParam" v-on:getClear="clearDate" v-on:getExcel="downExcel" v-on:getMonth="showMonth"  v-on:getDateparam="showSend"></orderTop>
 	<Table height="400" v-if="this.$store.state.saveData.showDate!=3" :loading="loading" border :columns="columns" :data="reportData"></Table>
 	<Table height="400" v-if="this.$store.state.saveData.showDate==3" :loading="loading" border :columns="columnsday" :data="reportData"></Table>
-		<div class="pages"><span class="inpage"><Page :total="total" :page-size="sizecom"  show-total show-sizer @on-page-size-change="changeSize" @on-change="changePage" /></span></div> 
+		<div class="pages"><span class="inpage"><Page v-if="hackReset" :total="total" :page-size="sizecom"  show-total show-sizer @on-page-size-change="changeSize" @on-change="changePage" /></span></div> 
 	</div>
 </template>
 <script>
@@ -20,6 +20,7 @@
 				month:true,
 				total:0,
 				sizecom:10,
+				hackReset:true,
 				loading:false,
 				monthParam:{
 					month:"2018-10",
@@ -182,14 +183,13 @@
 		methods:{
 			//获取报表
 			showSend(date){
-				var queryMonth="/supplier/queryMonth"
-				var queryWeek="/supplier/queryWeek"
-				var queryDay="/supplier/queryDay"
+				var queryMonth="/report/supplier/queryMonth"
+				var queryWeek="/report/supplier/queryWeek"
+				var queryDay="/report/supplier/queryDay"
 				this.getTabledata(date,queryMonth,queryWeek,queryDay)		
 			},	
 			//清空日期
 			clearDate(){
-				this.reloadcom()
 				this.reportData=[]
 				this.pageParam={
 					pageNum:1,
@@ -198,9 +198,12 @@
 				var mianTitle="供应商统计"
 				this.changtitle(mianTitle)
 			},
+			//刷新分页组件
+			showPage(){
+				this.reloadcom()
+			},
 			//获取日期
 			showParam(data){
-				this.reloadcom()
 				this.pageParam={
 					pageNum:1,
 					pageSize:10,
@@ -210,7 +213,6 @@
 			},
 			//获取月，周
 			showMonth(data){
-				this.reloadcom()
 			var mianTitle="供应商统计"
 				this.getMonthweek(data,mianTitle)
 			
@@ -227,9 +229,9 @@
 			},	
 			//下载
 			downExcel(){
-				var queryMonth="/supplier/queryMonth"
-				var queryWeek="/supplier/queryWeek"
-				var queryDay="/supplier/queryDay"
+				var queryMonth="/report/supplier/queryMonth"
+				var queryWeek="/report/supplier/queryWeek"
+				var queryDay="/report/supplier/queryDay"
 				this.getdownData(queryMonth,queryWeek,queryDay)
 			},
 		}				

@@ -118,8 +118,6 @@ export default {
 				  this.columns[0].title=mianTitle+"周报"
 					return;
 				}
-			
-
 				this.showSend(date)					
 			}else{
 				this.columnsday[0].title=mianTitle+"日报"+" ( "+this.$store.state.saveData.dayDate+"  )";
@@ -147,6 +145,7 @@ export default {
 		},
 		   // 刷新组件
      reloadcom(){
+			 this.total=0;
        this.hackReset = false
 					this.$nextTick(() => {
 					this.hackReset = true

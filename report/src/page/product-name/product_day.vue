@@ -95,7 +95,7 @@
 				var sendTitle={
 					goodsName:this.$route.query.title,
 				}
-				var url="/goods/queryDay"
+				var url="/report/goods/queryDay"
 				var mianTitle="商品名称按日报表"
 				this.getDayData(url,mianTitle,sendTitle)
 			},
@@ -114,7 +114,7 @@
 				var sendTitle={
 					goodsName:this.$route.query.title,
 				}
-				var url="/goods/queryDay"
+				var url="/report/goods/queryDay"
 				var ifdata=true;
 				this.getdownData(url,sendTitle,ifdata)
 			},

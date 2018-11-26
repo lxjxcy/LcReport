@@ -100,9 +100,9 @@
 					companyName:this.$route.query.title,
 				}
 				if(this.$store.state.saveData.showDate==1){
-					var url="/company/queryGoodsDetailMonth"
+					var url="/report/company/queryGoodsDetailMonth"
 				}else{
-					var url="/company/queryGoodsDetailWeek"
+					var url="/report/company/queryGoodsDetailWeek"
 				}
 				
 				var mianTitle="公司按商品报表"
@@ -124,9 +124,9 @@
 						companyName:this.$route.query.title,
 					}
 					if(this.$store.state.saveData.showDate==1){
-						var url="/company/queryGoodsDetailMonth"
+						var url="/report/company/queryGoodsDetailMonth"
 					}else{
-						var url="/company/queryGoodsDetailWeek"
+						var url="/report/company/queryGoodsDetailWeek"
 					}
 					var ifdata=false;
 					this.getdownData(url,sendTitle,ifdata)

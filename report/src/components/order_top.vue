@@ -19,6 +19,7 @@
 							<DatePicker v-if="showDate==1" @on-clear="clearData" :options="options" style="width: 200px;"  @on-change="onChangeDate"  type="month" format="yyyy-MM" placeholder="请选择日期" :value="this.$store.state.saveData.monthDate"></DatePicker>
 							<DatePicker v-if="showDate==2"  @on-clear="clearData" :options="options"  style="width: 200px;" @on-change="onChangeDate" type="daterange" format="yyyy-MM-dd" show-week-numbers  placeholder="请选择日期"  :value="this.$store.state.saveData.weekDate"></DatePicker>
 						</Col>
+						
 					</Row>
 				</FormItem>
 			<FormItem>
@@ -33,6 +34,7 @@
 				  </Button>
 				</FormItem>
 			</Form>
+			<span  v-if="showDate==2" style="position: relative;top:-5px"><span style="color:red">*</span>提示：（周五~周四）7天为一周，请选择两个日期，开始日期为周五，结束日期为下周四</span>
 		</div>
 		
 	</div>
@@ -47,8 +49,10 @@
 				options: {
 							disabledDate (date) {
 									return date && date.valueOf() > Date.now() - 8.64e6;
+									
 							}
 					},
+					ifrequired:true,
 					
 				// nowdate:new Date(),
 				showDate:1,
@@ -105,7 +109,6 @@
 			
 			let path = this.$route.matched[1].path  
 			if(path.indexOf('/activity_name') == 0){
-				debugger
 				this.workOrderList=[
 					{
 					label:'月报',
@@ -160,11 +163,14 @@
 					showDate:this.$store.state.saveData.showDate,
 				}
 				this.$store.commit('saveDatainfo',saveData)
+				this.$emit("clearPage")
 				this.$emit("getClear")
 				
 			},
 			//时间格式转换		
 			onChangeDate(value){
+				this.$emit("clearPage")
+				this.ifrequired=true;
 				if(value==""){
 					return;
 				}
@@ -190,19 +196,20 @@
 					var date1=value[1].slice(0,4)+"/"+value[1].slice(5,7)+"/"+value[1].slice(8,10)
 					var aDate = new Date(date0);
 					var bDate = new Date(date1);
-					
 					var aDay = 24 * 60 * 60 * 1000;
 					var diffDay = (bDate - aDate) / aDay; 
 					var nowday= new Date(value[0]).getDay()
 					// nowday!=1||
-					if(diffDay!=6){
-						this.$Modal.warning({
-									title: "提示",
-									content: "请选择时间为一周时间，开始时间为周一，结束时间为周日，"
-							});
-						this.search1.date="";
-						return;
-					}
+					if(value[0]==''&&value[1]==''){
+						return
+					}else if(diffDay!=6||nowday!=5){	
+					this.$Modal.warning({
+								title: "提示",
+								content: "请选择时间为一周时间，开始时间为周五，结束时间为周四"
+						});
+					this.$store.state.saveData.weekDate=[]	
+					return;
+				}
 					this.$emit("getTitle",title)
 					var Dateparam={
 						weekStart:value[0],
@@ -239,6 +246,7 @@
 				
 			},
 			changeModel(value){
+				this.$emit("clearPage")
 				var now=new Date()
 				var year=now.getFullYear()
 				var month = now.getMonth()+1;	

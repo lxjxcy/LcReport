@@ -1,9 +1,9 @@
 <template>
 	<div class="sales_name all">
-		<orderTop v-on:getTitle="showParam" v-on:getClear="clearDate" v-on:getExcel="downExcel" v-on:getMonth="showMonth"  v-on:getDateparam="showSend"></orderTop>
+		<orderTop v-on:clearPage="showPage" v-on:getTitle="showParam" v-on:getClear="clearDate" v-on:getExcel="downExcel" v-on:getMonth="showMonth"  v-on:getDateparam="showSend"></orderTop>
 		<Table height="400" v-if="this.$store.state.saveData.showDate!=3" :loading="loading" border :columns="columns" :data="reportData"></Table>
 		<Table height="400" v-if="this.$store.state.saveData.showDate==3" :loading="loading" border :columns="columnsday" :data="reportData"></Table>
-		<div class="pages"><span class="inpage"><Page :total="total" show-total show-sizer @on-page-size-change="changeSize" @on-change="changePage" /></span></div> 
+		<div class="pages"><span class="inpage"><Page v-if="hackReset" :total="total" show-total show-sizer @on-page-size-change="changeSize" @on-change="changePage" /></span></div> 
 	</div>
 </template>
 <script>
@@ -20,6 +20,7 @@
 				month:true,
 				total:0,
 				loading:false,
+				hackReset:true,
 				monthParam:{
 					month:"2018-10",
 				},
@@ -181,14 +182,13 @@
 		methods:{
 			//获取报表
 			showSend(date){
-				var queryMonth="/sales/queryMonth"
-				var queryWeek="/sales/queryWeek"
-				var queryDay="/sales/queryDay"
+				var queryMonth="/report/sales/queryMonth"
+				var queryWeek="/report/sales/queryWeek"
+				var queryDay="/report/sales/queryDay"
 				this.getTabledata(date,queryMonth,queryWeek,queryDay)		
 			},	
 			//清空日期
 			clearDate(){
-				this.reloadcom()
 				this.reportData=[]
 				this.pageParam={
 					pageNum:1,
@@ -197,9 +197,12 @@
 				var mianTitle="促销商品"
 				this.changtitle(mianTitle)
 			},
+			//刷新分页组件
+			showPage(){
+				this.reloadcom()
+			},
 			//获取日期
 			showParam(data){
-				this.reloadcom()
 				this.pageParam={
 					pageNum:1,
 					pageSize:10,
@@ -209,7 +212,6 @@
 			},
 			//获取月，周
 			showMonth(data){
-				this.reloadcom()
 			var mianTitle="促销商品"
 				this.getMonthweek(data,mianTitle)
 				
@@ -226,9 +228,9 @@
 			},	
 			//下载
 			downExcel(){
-				var queryMonth="/sales/queryMonth"
-				var queryWeek="/sales/queryWeek"
-				var queryDay="/sales/queryDay"
+				var queryMonth="/report/sales/queryMonth"
+				var queryWeek="/report/sales/queryWeek"
+				var queryDay="/report/sales/queryDay"
 				this.getdownData(queryMonth,queryWeek,queryDay)
 			},
 		}

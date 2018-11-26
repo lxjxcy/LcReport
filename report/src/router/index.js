@@ -54,6 +54,25 @@ export default new Router({
 					meta: {Auth: true},
 					component: resolve => require(['@/page/branch-company/product_detail'], resolve),
 				},
+				//整合方维度
+				{
+					path:'/integration',
+					name:'integration',
+					meta: {Auth: true},
+					component: resolve => require(['@/page/integration/integration'], resolve),
+				},
+				{
+					path:'/integration/integration_day',
+					name:'integration_day',
+					meta: {Auth: true},
+					component: resolve => require(['@/page/integration/integration_day'], resolve),
+				},
+				{
+					path:'/integration/integration_sec',
+					name:'integration_sec',
+					meta: {Auth: true},
+					component: resolve => require(['@/page/integration/integration_sec'], resolve),
+				},
 				//每日简报
 				{
 					path:'/daily',
@@ -154,6 +173,14 @@ export default new Router({
 					name:'file_name',
 					meta: {Auth: true},
 					component: resolve => require(['@/page/upload_file/file_name'], resolve),
+				},
+				//报表生成
+				
+				{
+					path:'/create-report/create_report',
+					name:'create_report',
+					meta: {Auth: true},
+					component: resolve => require(['@/page/create-report/create_report'], resolve),
 				},
 				
 			]

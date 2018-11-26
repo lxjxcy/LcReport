@@ -1,16 +1,18 @@
 <template>
 	<div class="echart_order_day all-echart">
-		<Row :gutter="20">
-			<col :xs="12" :md="8" :lg="4" v-for="(infor, i) in inforCardData" :key="`infor-${i}`" style="height: 120px;padding-bottom: 10px;">
-				<infor-card shadow :color="infor.color" :icon="infor.icon" :icon-size="36">
-					<count-to :end="infor.count" count-class="count-style"/>
-					<p>{{ infor.title }}</p>
-				</infor-card>
-			</col>
-		</Row>
+		<!-- <div id="employee" :style="{width: '500px', height: '330px',backgroundColor:'#fff'}"></div> -->
+		<div class="cardData">
+			<dl v-for="item in inforCardData">
+				<dt style="item.color"><Icon type="edit"></Icon></dt>
+				<dd>
+					<p class="p1">403</p>
+					<p class="p2">新增用户</p>
+				</dd>
+			</dl>
+		</div>
 	</div>
 </template>
-<script>
+<script> 
 	export default {
 		name:"echart_order_day",
 			data() {
@@ -117,5 +119,38 @@
 </script>
 
 <style>
+	.cardData{
+		display: flex;
+		flex-direction: row;
+		justify-content: start;
+		margin: 20px;
+	}
+	.cardData dl{
+		height:100px;
+		width:150px;
+		background: #fff;
+		display: flex;
+		flex-direction: row;
+		margin-right: 20px;
+		justify-content: space-between;
+	}
+	.cardData td{
+		background: red;
+		width:30%;
+	}
+	.cardData dd{
+		background:#18B566;
+		width:70%;
+		text-align: center;
+	}
+	.cardData .p1{
+		font-weight: 500;
+		font-size: 45px;
+	}
+	.cardData .p2{
+	
+		font-size: 14px;
+	}
+
 
 </style>

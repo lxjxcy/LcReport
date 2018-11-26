@@ -5,15 +5,14 @@
 			<div class="logopic">
 				<img src="../../assets/userLogo.png"/>
 			</div>
-			<div class="logotext">报表统计管理平台</div>
-			<!-- <echartLogin></echartLogin> -->
-			
+			<div class="logotext">报表统计管理平台</div>		
 		</div>
 		<div class="login-con">
 			
 			<Card icon="log-in" title="欢迎登录" :bordered="false">
+				<!--  -->
 				<div class="form-con">
-					<Form ref="loginForm" :model="loginForm" :rules="rules" @keydown.enter.native="handleSubmit">
+					<Form ref="loginForm" :model="loginForm" :rules="rules" @keydown.enter.native="handleSubmit('loginForm')">
 						<FormItem prop="loginName">
 							<Input v-model="loginForm.loginName" placeholder="请输入用户名">
 							<span slot="prepend">
@@ -34,7 +33,11 @@
 								<Icon :size="14" type="ios-construct" />
 							</span>
 							</Input>
-							<div class="code">1234</div>
+							<div class="code" @click="getImg()">
+								 <!-- <span v-model="imgUrl" class="check" style="position: absolute;right:0" > -->
+									 <img :src="imgUrl" alt="" style="width:100%;height:100%"/>
+									<!-- </span> -->
+							</div>
 						</FormItem>
 						<FormItem>
 							<Button :loading="loading" @click="handleSubmit('loginForm')" type="primary" long>登录</Button>
@@ -62,10 +65,13 @@ import md5 from 'js-md5';
 	 data(){
 		 return {
 			 loading:false,
+			 focusIndex: 0,
+			 imgUrl:"",
 			 loginForm: {
 				loginName: '',
 				password: '',
 				code:"",
+				
 			 },
 			  note: {
           backgroundImage: "url(" + require("../../assets/login.jpg") + ") ",
@@ -92,9 +98,21 @@ import md5 from 'js-md5';
 	 },
 	 mixins: [getnowtime],
 	 mounted(){
+		 this.getImg()
 		 this.$store.commit('exitUser')
 	 },
 	methods: {
+		 //  获取验证码
+				getImg(){
+					axios.post("/report/user/getCode").then(res=>{
+						// if(res.data.code==0){
+							this.imgUrl= `data:image/jpeg;base64,`+res.data.data.base;
+							console.log(this.imgUrl)
+						// }
+						
+					})
+				},
+		//提交
 		handleSubmit (loginForm) {	
 			var that=this;
 			that.$refs[loginForm].validate((valid) => {
@@ -103,9 +121,10 @@ import md5 from 'js-md5';
 					
 					var loginParam={
 						loginName:that.loginForm.loginName,
-						password:md5(that.loginForm.password)
+						password:md5(that.loginForm.password),
+						code:that.loginForm.code
 					}
-					axios.get("/user/loginUser",{params:loginParam}).then(res=>{
+					axios.get("/report/user/loginUser",{params:loginParam}).then(res=>{
 						that.loading=false;
 						if(res.data.code==0){
 							that.$store.commit('setToken',that.loginForm.loginName)
@@ -116,20 +135,8 @@ import md5 from 'js-md5';
 						}else{
 							that.$Message.error(res.data.message);
 							 
-						}
-						
-					})
-					// console.log(loginParam)
-					
-// 					if(that.loginForm.loginName=="admin"&&that.loginForm.password=="123456"){
-// 						var param={
-// 							loginName:that.loginForm.loginName
-// 						}
-// 						
-// 						
-// 					}
-					
-					
+						}	
+					})					
 				}
 			})
 		}

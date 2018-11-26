@@ -1,11 +1,11 @@
 <template>
-	<div class="province_day">
+	<div class="integration_day">
 		<div class="goback">
-			<goBack gobackUrl="/province_name" nowTitel="按日统计报表"></goBack>
+			<goBack gobackUrl="/integration" nowTitel="按日统计报表"></goBack>
 		</div>
 		<div class="all">
 			<dayTop v-on:getExcel="downExcel"></dayTop>
-			<Table height="400" border :columns="columns" :data="data"></Table>
+			<Table height="400" :loading="loading" border :columns="columns" :data="data"></Table>
 			<div class="pages"><span class="inpage"><Page :total="total" show-sizer show-total @on-page-size-change="changeSize" @on-change="changePage"/></span></div>
 		</div>
 	</div>
@@ -16,7 +16,7 @@
 	import dayTop from "../../components/day_top.vue"
 	import goday from "../../mixins/goday"
 	export default {
-		name:"province_day",
+		name:"integration_day",
 		components:{
 			goBack,
 			dayTop
@@ -30,11 +30,11 @@
 					pageNum:1,
 					pageSize:10,
 				},
-				tHeader:['日期', '订单数量','商品数量','订单总价(元)','订单均价(元)'],
-				filterVal:['date', 'orderNum','commodityNum','orderTotal','orderAverage'],
+				tHeader:['日期','订单数量','销售总额(万)','抵扣总额(元)','实付总额(元)','客单价（元/单）'],
+				filterVal:['date','orderNum','salesTotal','deductionTotal','payAmount','perSales'],
 				 columns: [
 					 {
-						title: '省份按日报表',
+						title: '整合方按日报表',
 						 key: '222',
 						 align: 'center',						 
 						 children:[
@@ -43,45 +43,44 @@
 							 width: 60,
 							 align: 'center',
 							 render: (h, params) => {
-							 var index=params.index+(this.pageParam.pageNum - 1) * this.pageParam.pageSize + 1
-							 	return h('div',{	
-							 	},index)
+								var index=params.index+(this.pageParam.pageNum - 1) * this.pageParam.pageSize + 1
+								return h('div',{	
+								},index)
 							 }
-							 },
+						    },
 							{
-							title: '日期',
-							key: 'date',
-							align: "center",
-// 							render: (h, params) => {
-// 								var nowdata=new Date(params.row.date)
-// 								var changdate =nowdata.getFullYear() + "-" + (nowdata.getMonth() + 1) + "-" + nowdata.getDate()
-// 								return h('div',{	
-// 								},changdate)
-// 							}
+								title: '日期',
+								key: 'date',
+								align: "center",
 							},
 							{
-							title: '订单数量',
-							key: 'orderNum',
-							align: 'center'
+								title: '订单数',
+								key: 'orderNum',
+								align: "center",
 							},
 							{
-							title: '商品数量',
-							key: 'commodityNum',
-							align: "center",
+								title: '销量总额(万)',
+								key: 'salesTotal',
+								align: "center",
 							},
 							{
-							title: '订单总价(元)',
-							key: 'orderTotal',
-							align: "center",
+								title: '抵扣总额(万)',
+								key: 'deductionTotal',
+								align: "center",
 							},
 							{
-							title: '订单均价(元)',
-							key: 'orderAverage',
-							align: "center",
+								title: '实付总额(万)',
+								key: 'payAmount',
+								align: "center",
+							},
+							{
+								title: '客单价（元/单）',
+								key: 'perSales',
+								align: "center",
 							},
 						 ]
 					 }            
-        ],
+                ],
 				data: []
 				
 			}
@@ -93,10 +92,10 @@
 		methods:{
 			getlist(){
 				var sendTitle={
-					province:this.$route.query.title,
+					integrationParty:this.$route.query.title,
 				}
-				var url="/report/province/queryDay"
-				var mianTitle="省份按日报表"
+				var url="/report/integration/queryDay"
+				var mianTitle="整合方按日报表"
 				this.getDayData(url,mianTitle,sendTitle)
 			},
 			//选择页数
@@ -112,9 +111,9 @@
 			//下载
 			downExcel(){
 				var sendTitle={
-					province:this.$route.query.title,
+					integrationParty:this.$route.query.title,
 				}
-				var url="/report/province/queryDay"
+				var url="/report/integration/queryDay"
 				var ifdata=true;
 				this.getdownData(url,sendTitle,ifdata)
 			},

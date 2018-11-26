@@ -1,9 +1,9 @@
 <template>
 	<div class="province_name all">
-		<orderTop v-on:getTitle="showParam" v-on:getClear="clearDate" v-on:getExcel="downExcel" v-on:getMonth="showMonth"  v-on:getDateparam="showSend"></orderTop>
+		<orderTop v-on:clearPage="showPage" v-on:getTitle="showParam" v-on:getClear="clearDate" v-on:getExcel="downExcel" v-on:getMonth="showMonth"  v-on:getDateparam="showSend"></orderTop>
 		<Table height="400" v-if="this.$store.state.saveData.showDate!=3" :loading="loading" border :columns="columns" :data="reportData"></Table>
 		<Table height="400" v-if="this.$store.state.saveData.showDate==3" :loading="loading" border :columns="columnsday" :data="reportData"></Table>
-		<div class="pages"><span class="inpage"><Page :total="total"  show-total show-sizer @on-page-size-change="changeSize" @on-change="changePage" /></span></div> 
+		<div class="pages"><span class="inpage"><Page :total="total" v-if="hackReset"  show-total show-sizer @on-page-size-change="changeSize" @on-change="changePage" /></span></div> 
 	</div>
 </template>
 <script>
@@ -20,6 +20,7 @@
 				month:true,
 				total:0,
 				loading:false,
+				hackReset:true,
 				monthParam:{
 					month:"2018-10",
 				},
@@ -161,9 +162,9 @@
 		methods:{
 			//获取报表
 			showSend(date){
-				var queryMonth="/province/queryMonth"
-				var queryWeek="/province/queryWeek"
-				var queryDay="/province/queryDay"
+				var queryMonth="/report/province/queryMonth"
+				var queryWeek="/report/province/queryWeek"
+				var queryDay="/report/province/queryDay"
 				this.getTabledata(date,queryMonth,queryWeek,queryDay)		
 			},	
 			//清空日期
@@ -206,9 +207,9 @@
 			},	
 			//下载
 			downExcel(){
-				var queryMonth="/province/queryMonth"
-				var queryWeek="/province/queryWeek"
-				var queryDay="/province/queryDay"
+				var queryMonth="/report/province/queryMonth"
+				var queryWeek="/report/province/queryWeek"
+				var queryDay="/report/province/queryDay"
 				this.getdownData(queryMonth,queryWeek,queryDay)
 			},
 		}

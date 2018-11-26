@@ -6,24 +6,47 @@
 					
 			    <Sider :style="{height: '100vh', overflow: 'auto'}">
 						<div class="aside-log"></div>
-            <Menu :active-name="activemenu" theme="dark" width="auto" :open-names="['1']" @on-select="routeTo">
-							<MenuItem name="2"><Icon type="ios-cloud-upload-outline" />文件导入</MenuItem>
-                <Submenu name="1">
-                    <template slot="title">
-                        <Icon type="md-book" />
-                        表报统计
-                    </template>
-                    <MenuItem name="1-1"><Icon type="ios-chatbubbles-outline" />渠道维度</MenuItem>
-                    <MenuItem name="1-2"><Icon type="ios-bug-outline" />分公司维度</MenuItem>
-                    <!-- <MenuItem name="1-3"><Icon type="ios-calendar-outline" />应用维度</MenuItem> -->
-										<MenuItem name="1-4"><Icon type="ios-calendar-outline" />项目名称维度</MenuItem>
-										<MenuItem name="1-5"><Icon type="ios-hammer" />商品名称维度</MenuItem>
-										<MenuItem name="1-6"><Icon type="ios-cut-outline" />促销商品名称维度</MenuItem>	
-										<MenuItem name="1-7"><Icon type="ios-calendar-outline" />营销活动维度</MenuItem>
-										<MenuItem name="1-8"><Icon type="md-closed-captioning" />供应商维度</MenuItem>
-										<!-- <MenuItem name="1-9"><Icon type="ios-clipboard-outline" />省份维度</MenuItem> -->
-										<!-- <MenuItem name="1-10"><Icon type="ios-cloud-circle-outline" />每日简报</MenuItem> -->
-                </Submenu>
+            <Menu :active-name="activemenu" theme="dark" width="auto" :open-names="nameslist" @on-select="routeTo" @on-open-change="showName">
+							<!-- <MenuItem name="2"><Icon type="ios-cloud-upload-outline" />文件导入</MenuItem> -->
+              
+							<Submenu name="1">
+									<template slot="title">
+											<Icon type="md-book" />
+											报表统计
+									</template>
+									<MenuItem name="1-1"><Icon type="ios-chatbubbles-outline" />渠道维度</MenuItem>
+									<MenuItem name="1-2"><Icon type="ios-bug-outline" />分公司维度</MenuItem>
+									<MenuItem name="1-11"><Icon type="ios-clipboard-outline" />整合方维度</MenuItem>
+									<!-- <MenuItem name="1-3"><Icon type="ios-calendar-outline" />应用维度</MenuItem> -->
+									<MenuItem name="1-4"><Icon type="ios-calendar-outline" />项目名称维度</MenuItem>
+									
+									<MenuItem name="1-5"><Icon type="ios-hammer" />商品名称维度</MenuItem>
+									<MenuItem name="1-8"><Icon type="md-closed-captioning" />供应商维度</MenuItem>
+									
+									<MenuItem name="1-6"><Icon type="ios-cut-outline" />促销商品名称维度</MenuItem>	
+									<MenuItem name="1-7"><Icon type="ios-calendar-outline" />营销活动维度</MenuItem>
+									
+									<!-- <MenuItem name="1-9"><Icon type="ios-clipboard-outline" />省份维度</MenuItem> -->
+									<MenuItem name="1-10"><Icon type="ios-cloud-circle-outline" />每日简报</MenuItem>
+							</Submenu>
+							
+							 <Submenu name="2" v-if="this.$store.state.userInfo.userType==1">
+               		<template slot="title">
+										<Icon type="ios-cloud-upload-outline" />
+               				
+               				文件导入
+               		</template>
+               		<MenuItem name="2-1"><Icon type="ios-cloud-upload-outline" />幸福绿城app</MenuItem>
+               </Submenu>
+							 <Submenu name="3" v-if="this.$store.state.userInfo.userType==1">
+							 	<template slot="title">
+							 			<Icon type="md-color-filter" />
+							 			报表生成
+							 	</template>
+							 	<MenuItem name="3-1"><Icon type="md-color-filter" />报表生成</MenuItem>
+							 </Submenu>
+							
+								
 							
             </Menu>
         </Sider>
@@ -54,26 +77,20 @@
 				</div>
 			 
 		  </main>
-			<sliderAd></sliderAd>
-				
-			
 	</div>
 	
 </template>
 
 <script>
 	import getnowtime from "../mixins/nowTime.js"
-	import sliderAd from "../components/sliderAd.vue"
 	export default {
 		name:"home",
-		components:{
-			sliderAd
-		},
 		data(){
 			return{
 				nowdate: new Date(),
 				activemenu:"1-1",
 				value2:0,
+				nameslist:["1"]
 			
 			}
 		},
@@ -114,6 +131,9 @@
 		},
 		mixins: [getnowtime],
 		 methods: {
+			 showName(e){
+				 // debugger
+			 },
 			 back(){
 				  this.$Modal.confirm({
                     title: ' 提示',
@@ -165,8 +185,14 @@
 					if(e=="1-10"){
 						this.$router.push("/daily");
 					}
-					if(e=="2"){
+					if(e=="1-11"){
+						this.$router.push("/integration");
+					}
+					if(e=="2-1"){
 						this.$router.push("/upload_file/file_name");
+					}
+					if(e=="3-1"){
+						this.$router.push("/create-report/create_report");
 					}
 					 
 				},
@@ -204,8 +230,14 @@
 							if(path.indexOf('/daily') == 0){
 								this.activemenu = "1-10"
 							}
+							if(path.indexOf('/integration') == 0){
+								this.activemenu = "1-11"
+							}
 							if(path.indexOf('/upload_file/file_name') == 0){
-								this.activemenu = "2"
+								this.activemenu = "2-1"
+							}
+							if(path.indexOf('/create-report/create_report') == 0){
+								this.activemenu = "3-1"
 							}
          }						
 						

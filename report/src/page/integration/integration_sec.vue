@@ -1,7 +1,7 @@
 <template>
-	<div class="project_day">
+	<div class="integration_sec">
 		<div class="goback">
-			<goBack gobackUrl="/project_name" nowTitel="按日统计报表"></goBack>
+			<goBack gobackUrl="/integration" nowTitel="二级整合方报表"></goBack>
 		</div>
 		<div class="all">
 			<dayTop v-on:getExcel="downExcel"></dayTop>
@@ -16,7 +16,7 @@
 	import dayTop from "../../components/day_top.vue"
 	import goday from "../../mixins/goday"
 	export default {
-		name:"project_day",
+		name:"integration_sec",
 		components:{
 			goBack,
 			dayTop
@@ -30,11 +30,11 @@
 					pageNum:1,
 					pageSize:10,
 				},
-				tHeader:['日期','订单数量','商品数量','订单总价(元)','订单均价(元)'],
-				filterVal:['date','orderNum','goodsNum','salesTotal','deductionTotal'],
+				tHeader:['商家整合','订单数量','销售总额(元)','抵扣总额(元)','实付总额(元)','客单价（元/单）'],
+				filterVal:['merchantIntegration','orderNum','salesTotal','deductionTotal','payAmount','perSales'],
 				 columns: [
 					 {
-						title: '项目按日报表',
+						title: '二级整合方报表',
 						 key: '222',
 						 align: 'center',						 
 						 children:[
@@ -43,45 +43,44 @@
 							 width: 60,
 							 align: 'center',
 							 render: (h, params) => {
-							 var index=params.index+(this.pageParam.pageNum - 1) * this.pageParam.pageSize + 1
+							 	var index=params.index+(this.pageParam.pageNum - 1) * this.pageParam.pageSize + 1
 							 	return h('div',{	
 							 	},index)
 							 }
 							 },
-							{
-							title: '日期',
-							key: 'date',
-							align: "center",
-// 							render: (h, params) => {
-// 								var nowdata=new Date(params.row.date)
-// 								var changdate =nowdata.getFullYear() + "-" + (nowdata.getMonth() + 1) + "-" + nowdata.getDate()
-// 								return h('div',{	
-// 								},changdate)
-// 							}
+		                    {
+								title: '商家整合',
+								key: 'merchantIntegration',
+								align: 'center'
 							},
 							{
-							title: '订单数量',
-							key: 'orderNum',
-							align: 'center'
+								title: '订单数',
+								key: 'orderNum',
+								align: "center",
 							},
 							{
-							title: '商品数量',
-							key: 'goodsNum',
-							align: "center",
+								title: '销量总额(元)',
+								key: 'salesTotal',
+								align: "center",
 							},
 							{
-							title: '订单总价(元)',
-							key: 'salesTotal',
-							align: "center",
+								title: '抵扣总额(元)',
+								key: 'deductionTotal',
+								align: "center",
 							},
 							{
-							title: '订单均价(元)',
-							key: 'deductionTotal',
-							align: "center",
+								title: '实付总额(元)',
+								key: 'payAmount',
+								align: "center",
+							},
+							{
+								title: '客单价（元/单）',
+								key: 'perSales',
+								align: "center",
 							},
 						 ]
 					 }            
-        ],
+                ],
 				data: []
 				
 			}
@@ -93,12 +92,16 @@
 		methods:{
 			getlist(){
 				var sendTitle={
-					yearName:this.$route.query.title,
+					integrationParty:this.$route.query.title,
 				}
-				var url="/report/project/queryDay"
-				var mianTitle="项目按日报表"
-				this.getDayData(url,mianTitle,sendTitle)
-			
+				if(this.$store.state.saveData.showDate==1){
+					var url="/report/integration/querySecMonth"
+				}else{
+					var url="/report/integration/querySecWeek"
+				}
+				
+				var mianTitle="二级整合方报表"
+				this.getsed(url,mianTitle,sendTitle)
 			},
 			//选择页数
 			changePage(val){
@@ -113,14 +116,19 @@
 				//下载
 				downExcel(){
 					var sendTitle={
-						yearName:this.$route.query.title,
+						integrationParty:this.$route.query.title,
 					}
-					var url="/report/project/queryDay"
-					var ifdata=true;
+					if(this.$store.state.saveData.showDate==1){
+						var url="/report/integration/querySecMonth"
+					}else{
+						var url="/report/integration/querySecWeek"
+					}
+					var ifdata=false;
 					this.getdownData(url,sendTitle,ifdata)
 				},
 			
-		}				
+		}
+				
 	}
 </script>
 

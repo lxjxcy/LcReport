@@ -5,6 +5,7 @@ import App from './App'
 import store from './store/index.js'
 import router from './router'
 import axios from "./axiosconfig/index.js"
+// import "./directive"
 // import {Option ,Modal ,Message ,Select ,Sider,RadioGroup,Col ,Row,DatePicker ,Input ,FormItem , Form ,Button, Radio,Dropdown,Icon,Card ,Menu,Upload,Breadcrumb,Table,Submenu,Page,DropdownMenu,DropdownItem,BreadcrumbItem,MenuItem} from 'iview';
 // Vue.component('Option',Option );
 // Vue.component('Modal',Modal );
@@ -41,7 +42,11 @@ import 'babel-polyfill'
 // import $ from 'jquery'
 // import 'bootstrap'
 import iView from 'iview';
+
+
 import 'iview/dist/styles/iview.css';
+// import global_ from './global.js'
+// Vue.prototype.GLOBAL = global_
 
 // axios.defaults.withCredentials = true;
 // Vue.prototype.axios = axios;
@@ -86,6 +91,8 @@ if (window.sessionStorage.getItem('token')) {
 
 Vue.config.productionTip = false
 Vue.use(iView);
+
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

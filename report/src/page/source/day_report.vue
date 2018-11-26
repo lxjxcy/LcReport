@@ -7,8 +7,14 @@
 			<dayTop v-on:getExcel="downExcel"></dayTop>
 			<Table height="400" :loading="loading" border :columns="columns" :data="data"></Table>
 			<div class="pages"><span class="inpage"><Page :total="total" show-sizer show-total @on-page-size-change="changeSize" @on-change="changePage"/></span></div>
-			<!-- <echartDay></echartDay> -->
+			
 		</div>
+		<!-- <div class="echartbox">
+			<echartDay></echartDay>
+			
+		</div> -->
+		
+		
 	</div>
 </template>
 <script>
@@ -55,6 +61,7 @@
 							 	title: '日期',
 							 	key: 'date',
 							 	align: 'center',
+								sortable: true
 // 								render: (h, params) => {
 // 									var nowdata=new Date(params.row.date)
 // 									var changdate =nowdata.getFullYear() + "-" + (nowdata.getMonth() + 1) + "-" + nowdata.getDate()
@@ -65,7 +72,8 @@
 							 {
 							 	title: '下单用户数',
 							 	key: 'orderUserNum',
-							 	align: 'center'
+							 	align: 'center',
+								sortable: true
 							 },
 							 {
 							 	title: '订单数',
@@ -108,7 +116,7 @@
 				var sendTitle={
 					orderSource:this.$route.query.title,
 				}
-				var url="/channel/queryDay"
+				var url="/report/channel/queryDay"
 				var mianTitle="渠道按日统计报表"
 				this.getDayData(url,mianTitle,sendTitle)
 			},
@@ -127,7 +135,7 @@
 				var sendTitle={
 					orderSource:this.$route.query.title,
 				}
-				var url="/channel/queryDay";
+				var url="/report/channel/queryDay";
 				var ifdata=true;
 				this.getdownData(url,sendTitle,ifdata)
 			}

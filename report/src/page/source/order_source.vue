@@ -1,6 +1,6 @@
 <template>
 	<div class="order_source all">	
-		<orderTop v-on:getTitle="showParam" v-on:getClear="clearDate"  v-on:getMonth="showMonth" v-on:getExcel="downExcel"  v-on:getDateparam="showSend"></orderTop>		
+		<orderTop v-on:getTitle="showParam" v-on:getClear="clearDate"  v-on:getMonth="showMonth" v-on:getExcel="downExcel"  v-on:getDateparam="showSend" v-on:clearPage="showPage"></orderTop>		
 		<Table height="400" v-if="this.$store.state.saveData.showDate!=3" :loading="loading" border :columns="columns" :data="reportData"></Table>
 		<Table height="400" v-if="this.$store.state.saveData.showDate==3" :loading="loading" border :columns="columnsday" :data="reportData"></Table>
 		<div class="pages"><span class="inpage"><Page v-if="hackReset"  :total="total" show-total show-sizer @on-page-size-change="changeSize" @on-change="changePage" /></span></div> 
@@ -49,7 +49,8 @@
 							{
 							title: '下单用户数',
 							key: 'orderUserNum',
-							align: 'center'
+							align: 'center',
+							
 							},
 							{
 							title: '订单数',
@@ -188,14 +189,13 @@
 		methods:{
 			//获取报表
 			showSend(date){
-				var queryMonth="/channel/queryMonth"
-				var queryWeek="/channel/queryWeek"
-				var queryDay="/channel/queryDay"
+				var queryMonth="/report/channel/queryMonth"
+				var queryWeek="/report/channel/queryWeek"
+				var queryDay="/report/channel/queryDay"
 				this.getTabledata(date,queryMonth,queryWeek,queryDay)		
 			},	
 			//清空日期
 			clearDate(){
-				this.reloadcom()
 				this.reportData=[]
 				this.pageParam={
 					pageNum:1,
@@ -204,11 +204,13 @@
 				var mianTitle="分渠道统计"
 				this.changtitle(mianTitle)
 			},
+			//刷新分页组件
+			showPage(){
+				this.reloadcom()
+			},
 			
 			//获取日期
 			showParam(data){
-				console.log(data)
-				this.reloadcom()
 				this.pageParam={
 					pageNum:1,
 					pageSize:10,
@@ -219,15 +221,14 @@
 			},
 			//获取月，周
 			showMonth(data){
-				this.reloadcom()
        var mianTitle="分渠道统计";
 				this.getMonthweek(data,mianTitle)
 			},
 			//下载
 			downExcel(){
-				var queryMonth="/channel/queryMonth"
-				var queryWeek="/channel/queryWeek"
-				var queryDay="/channel/queryDay"
+				var queryMonth="/report/channel/queryMonth"
+				var queryWeek="/report/channel/queryWeek"
+				var queryDay="/report/channel/queryDay"
 				this.getdownData(queryMonth,queryWeek,queryDay)
 			
 			},
