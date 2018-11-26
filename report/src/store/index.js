@@ -12,7 +12,7 @@ export default new Vuex.Store({
 		 saveData:{
 			 dayDate:"",
 			 monthDate:"",
-			 weekDate:[],
+			 weekDate:"",
 			 showDate:1,
 		 }
 	 },
@@ -39,7 +39,7 @@ export default new Vuex.Store({
 			state.saveData={
 				dayDate:"",
 				monthDate:"",
-				weekDate:[],
+				weekDate:"",
 				showDate:1,
 			}
 		  sessionStorage.removeItem('token')

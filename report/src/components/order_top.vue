@@ -15,11 +15,31 @@
 				<FormItem label="日期">
 					<Row>
 						<Col span="11">
-							 <DatePicker v-if="showDate==3" type="date" :options="options" @on-clear="clearData" @on-change="onChangeDate" placeholder="请选择日期" format="yyyy-MM-dd" style="width: 200px" :value="this.$store.state.saveData.dayDate"></DatePicker>
+							<!-- 日报 -->
+							<DatePicker v-if="showDate==3" type="date" :options="options" @on-clear="clearData" @on-change="onChangeDate" placeholder="请选择日期" format="yyyy-MM-dd" style="width: 200px" :value="this.$store.state.saveData.dayDate"></DatePicker>
+							<!-- 月报 -->
 							<DatePicker v-if="showDate==1" @on-clear="clearData" :options="options" style="width: 200px;"  @on-change="onChangeDate"  type="month" format="yyyy-MM" placeholder="请选择日期" :value="this.$store.state.saveData.monthDate"></DatePicker>
-							<DatePicker v-if="showDate==2"  @on-clear="clearData" :options="options"  style="width: 200px;" @on-change="onChangeDate" type="daterange" format="yyyy-MM-dd" show-week-numbers  placeholder="请选择日期"  :value="this.$store.state.saveData.weekDate"></DatePicker>
+							<!-- <DatePicker v-if="showDate==2"  @on-clear="clearData" :options="options"  style="width: 200px;" @on-change="onChangeDate" type="daterange" format="yyyy-MM-dd" show-week-numbers  placeholder="请选择日期"  :value="this.$store.state.saveData.weekDate"></DatePicker> -->
+							<!-- 周报 -->
+							<div v-if="showDate==2">
+								<i-input icon="ivu-icon ivu-icon-ios-calendar-outline" ref="inputs" @on-change="clearData" clearable @on-blur="removefocus" :value="this.$store.state.saveData.weekDate" placeholder="请选择日期" style="width: 200px" @on-focus="focusClick()"></i-input>			
+								<div style="position: relative;left:0;top:-13px;">
+									<Date-picker
+										:open="open"
+										:value="value3"
+										:options="options"
+										type="date"
+										@on-change="weekHandleChange"
+										@on-clear="handleClear"
+										@on-ok="handleOk">
+										<a href="javascript:void(0)" @click="handleClick">
+										</a>
+									</Date-picker>
+								</div>	
+							</div>
+					
+					
 						</Col>
-						
 					</Row>
 				</FormItem>
 			<FormItem>
@@ -34,7 +54,7 @@
 				  </Button>
 				</FormItem>
 			</Form>
-			<span  v-if="showDate==2" style="position: relative;top:-5px"><span style="color:red">*</span>提示：（周五~周四）7天为一周，请选择两个日期，开始日期为周五，结束日期为下周四</span>
+			<!-- <span  v-if="showDate==2" style="position: relative;top:-5px"><span style="color:red">*</span>提示：（周五~周四）7天为一周，请选择两个日期，开始日期为周五，结束日期为下周四</span> -->
 		</div>
 		
 	</div>
@@ -42,6 +62,7 @@
 
 <script>
 	import axios from 'axios';
+	import weekD from "../mixins/weekdateTop.js"
 	export default {
 		name:"order_top",
 		data(){
@@ -52,7 +73,10 @@
 									
 							}
 					},
+					open: false,
+					value3:"",
 					ifrequired:true,
+					
 					
 				// nowdate:new Date(),
 				showDate:1,
@@ -105,6 +129,7 @@
 			}
 			
 		},
+		mixins: [weekD],
 		mounted(){
 			
 			let path = this.$route.matched[1].path  
@@ -137,29 +162,30 @@
 		},
 
 		methods:{
+			
 			//导出excle表
 			download(){
 				this.$store.state.loadData=[];
 				this.$store.state.loading=true;
 				this.$emit("getExcel")
 			},
-			//上传文件
-			handleBeforeUpload(file){
-				console.log(file)
-				let fd = new FormData();
-				fd.append('file',file);
-			axios.post("upload/uploadExcel",fd).then(res=>{
-				console.log(res)
-			})
-				
-				
-			},
+			
+// 			//上传文件
+// 			handleBeforeUpload(file){
+// 					console.log(file)
+// 					let fd = new FormData();
+// 					fd.append('file',file);
+// 				axios.post("upload/uploadExcel",fd).then(res=>{
+// 					console.log(res)
+// 				})
+// 
+// 			},
 			//清空日期
 			clearData(){
 				var saveData={
 					monthDate:"",
 					dayDate:"",
-					weekDate:[],	
+					weekDate:"",	
 					showDate:this.$store.state.saveData.showDate,
 				}
 				this.$store.commit('saveDatainfo',saveData)
@@ -178,7 +204,7 @@
 				if(this.$store.state.saveData.showDate==1){
 					var saveData={
 						monthDate:value,
-						weekDate:[],
+						weekDate:"",
 						dayDate:"",
 						showDate:this.$store.state.saveData.showDate,
 					}
@@ -190,43 +216,44 @@
 						month:value
 					}
 					this.$emit("getDateparam",Dateparam)
-				}else if(this.$store.state.saveData.showDate==2){
-					var title=this.search2.reportType+"     (     "+value[0]+"——"+value[1]+" ) "	
-					var date0=value[0].slice(0,4)+"/"+value[0].slice(5,7)+"/"+value[0].slice(8,10)
-					var date1=value[1].slice(0,4)+"/"+value[1].slice(5,7)+"/"+value[1].slice(8,10)
-					var aDate = new Date(date0);
-					var bDate = new Date(date1);
-					var aDay = 24 * 60 * 60 * 1000;
-					var diffDay = (bDate - aDate) / aDay; 
-					var nowday= new Date(value[0]).getDay()
-					// nowday!=1||
-					if(value[0]==''&&value[1]==''){
-						return
-					}else if(diffDay!=6||nowday!=5){	
-					this.$Modal.warning({
-								title: "提示",
-								content: "请选择时间为一周时间，开始时间为周五，结束时间为周四"
-						});
-					this.$store.state.saveData.weekDate=[]	
-					return;
 				}
-					this.$emit("getTitle",title)
-					var Dateparam={
-						weekStart:value[0],
-						weekEnd:value[1]
-					}
-					
-					var saveData={
-						monthDate:"",
-						dayDate:"",
-						weekDate:[value[0],value[1]],
-						showDate:this.$store.state.saveData.showDate,
-					}
-					this.$store.commit('saveDatainfo',saveData)
-					this.$emit("getDateparam",Dateparam)
-						
-				}else{
-					
+// 				else if(this.$store.state.saveData.showDate==2){
+// 					var title=this.search2.reportType+"     (     "+value[0]+"——"+value[1]+" ) "	
+// 					var date0=value[0].slice(0,4)+"/"+value[0].slice(5,7)+"/"+value[0].slice(8,10)
+// 					var date1=value[1].slice(0,4)+"/"+value[1].slice(5,7)+"/"+value[1].slice(8,10)
+// 					var aDate = new Date(date0);
+// 					var bDate = new Date(date1);
+// 					var aDay = 24 * 60 * 60 * 1000;
+// 					var diffDay = (bDate - aDate) / aDay; 
+// 					var nowday= new Date(value[0]).getDay()
+// 					// nowday!=1||
+// 					if(value[0]==''&&value[1]==''){
+// 						return
+// 					}else if(diffDay!=6||nowday!=5){	
+// 					this.$Modal.warning({
+// 								title: "提示",
+// 								content: "请选择时间为一周时间，开始时间为周五，结束时间为周四"
+// 						});
+// 					this.$store.state.saveData.weekDate=[]	
+// 					return;
+// 				}
+// 					this.$emit("getTitle",title)
+// 					var Dateparam={
+// 						weekStart:value[0],
+// 						weekEnd:value[1]
+// 					}
+// 					
+// 					var saveData={
+// 						monthDate:"",
+// 						dayDate:"",
+// 						weekDate:[value[0],value[1]],
+// 						showDate:this.$store.state.saveData.showDate,
+// 					}
+// 					this.$store.commit('saveDatainfo',saveData)
+// 					this.$emit("getDateparam",Dateparam)
+// 						
+// 				}
+					else{
 					var saveData={
 						monthDate:"",
 						weekDate:[],

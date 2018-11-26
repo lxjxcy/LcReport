@@ -1,4 +1,5 @@
 import axios from "axios"
+
 export default {
 	methods:{
 		createReport(url,param,searchurl,sreachparam,day){

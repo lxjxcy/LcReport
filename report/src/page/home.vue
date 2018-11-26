@@ -1,9 +1,6 @@
 <template>
-	
 	<div class="home">
-		  <aside>
-			 <!-- <asidecomp></asidecomp> -->
-					
+		  <aside>		
 			    <Sider :style="{height: '100vh', overflow: 'auto'}">
 						<div class="aside-log"></div>
             <Menu :active-name="activemenu" theme="dark" width="auto" :open-names="nameslist" @on-select="routeTo" @on-open-change="showName">
@@ -29,11 +26,9 @@
 									<!-- <MenuItem name="1-9"><Icon type="ios-clipboard-outline" />省份维度</MenuItem> -->
 									<MenuItem name="1-10"><Icon type="ios-cloud-circle-outline" />每日简报</MenuItem>
 							</Submenu>
-							
 							 <Submenu name="2" v-if="this.$store.state.userInfo.userType==1">
                		<template slot="title">
-										<Icon type="ios-cloud-upload-outline" />
-               				
+										<Icon type="ios-cloud-upload-outline" />             				
                				文件导入
                		</template>
                		<MenuItem name="2-1"><Icon type="ios-cloud-upload-outline" />幸福绿城app</MenuItem>
@@ -44,10 +39,7 @@
 							 			报表生成
 							 	</template>
 							 	<MenuItem name="3-1"><Icon type="md-color-filter" />报表生成</MenuItem>
-							 </Submenu>
-							
-								
-							
+							 </Submenu>						
             </Menu>
         </Sider>
 		  </aside>
@@ -65,12 +57,15 @@
 										</a>
 										<DropdownMenu slot="list" style="text-align: center;">
 												<DropdownItem ><span @click="back()" style="display: block;">退出</span></DropdownItem>
+												<!-- <DropdownItem ><span @click="change()" style="display: block;">修改密码</span></DropdownItem> -->
 										</DropdownMenu>
 								</Dropdown>
 						</div>
 
 				  </div>
 			  </header>
+				<!-- <changePass ref="mychange" v-if="hackReset" @reload="reloadcom"></changePass> -->
+				
 				
 				<div class="content-center">
 					<router-view/>
@@ -83,11 +78,17 @@
 
 <script>
 	import getnowtime from "../mixins/nowTime.js"
+	// import changePass from "../components/changePass.vue"
 	export default {
 		name:"home",
+// 		components:{
+// 			changePass,
+// 		},
+		
 		data(){
 			return{
 				nowdate: new Date(),
+				hackReset:true,
 				activemenu:"1-1",
 				value2:0,
 				nameslist:["1"]
@@ -134,6 +135,7 @@
 			 showName(e){
 				 // debugger
 			 },
+			 //退出
 			 back(){
 				  this.$Modal.confirm({
                     title: ' 提示',
@@ -147,6 +149,17 @@
                     }
               });
 			 },
+			 //修改密码
+// 			 change(){
+// 				 this.$refs.mychange.changeModel();
+// 			 },
+// 			 // 刷新组件
+//        reloadcom(){
+//         this.hackReset = false
+//          this.$nextTick(() => {
+//             this.hackReset = true
+//          })
+//        },
 				collapsedSider () {
 						this.$refs.side1.toggleCollapse();
 				},

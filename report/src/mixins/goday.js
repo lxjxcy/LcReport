@@ -11,8 +11,8 @@ export default {
 				}
 			}else if(that.$store.state.saveData.showDate==2){
 				var monthparam={
-					weekStart:that.$store.state.saveData.weekDate[0],
-					weekEnd:that.$store.state.saveData.weekDate[1],
+					weekStart:that.$store.state.saveData.weekDate.slice(0,10),
+					weekEnd:that.$store.state.saveData.weekDate.slice(11),
 				}
 			}
 			var param=Object.assign(monthparam, sendTitle,that.pageParam)
@@ -42,8 +42,8 @@ export default {
 			}else if(that.$store.state.saveData.showDate==2){
 				
 				var monthparam={
-					weekStart:that.$store.state.saveData.weekDate[0],
-					weekEnd:that.$store.state.saveData.weekDate[1],
+					weekStart:that.$store.state.saveData.weekDate.slice(0,10),
+					weekEnd:that.$store.state.saveData.weekDate.slice(11),
 				}
 				
 				
@@ -73,8 +73,8 @@ export default {
 				}
 			}else if(that.$store.state.saveData.showDate==2){
 				var monthparam={
-					weekStart:that.$store.state.saveData.weekDate[0],
-					weekEnd:that.$store.state.saveData.weekDate[1],
+					weekStart:that.$store.state.saveData.weekDate.slice(0,10),
+					weekEnd:that.$store.state.saveData.weekDate.slice(11),
 				}
 			}
 			

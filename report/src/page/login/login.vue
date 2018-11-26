@@ -125,15 +125,18 @@ import md5 from 'js-md5';
 						code:that.loginForm.code
 					}
 					axios.get("/report/user/loginUser",{params:loginParam}).then(res=>{
+						that.getImg()
 						that.loading=false;
 						if(res.data.code==0){
 							that.$store.commit('setToken',that.loginForm.loginName)
 							that.$store.commit('saveUserinfo',res.data.data)
 							that.$router.push('/source/source')
-							that.getnowTime()
 							
 						}else{
 							that.$Message.error(res.data.message);
+							that.getnowTime()
+							that.loginForm.code=="";
+							
 							 
 						}	
 					})					

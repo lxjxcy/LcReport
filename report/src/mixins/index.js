@@ -9,8 +9,8 @@ export default {
 				}			
 			}else if(this.$store.state.saveData.showDate==2){
 				var date={
-					weekStart:this.$store.state.saveData.weekDate[0],
-					weekEnd:this.$store.state.saveData.weekDate[1],
+					weekStart:this.$store.state.saveData.weekDate.slice(0,10),
+					weekEnd:this.$store.state.saveData.weekDate.slice(11),
 				}	
 			}else{
 				var date={
@@ -109,12 +109,12 @@ export default {
 				}
 				this.showSend(date)
 			}else if(this.$store.state.saveData.showDate==2){
-				this.columns[0].title=mianTitle+"周报"+" ( "+this.$store.state.saveData.weekDate[0]+"——"+this.$store.state.saveData.weekDate[1]+"  )";;
+				this.columns[0].title=mianTitle+"周报"+" ( "+this.$store.state.saveData.weekDate.slice(0,10)+"——"+this.$store.state.saveData.weekDate.slice(11)+"  )";;
 				var date={
-					weekStart:this.$store.state.saveData.weekDate[0],
-					weekEnd:this.$store.state.saveData.weekDate[1],
+					weekStart:this.$store.state.saveData.weekDate.slice(0,10),
+					weekEnd:this.$store.state.saveData.weekDate.slice(11),
 				}
-				if(this.$store.state.saveData.weekDate.length==0){
+				if(this.$store.state.saveData.weekDate==""){
 				  this.columns[0].title=mianTitle+"周报"
 					return;
 				}
@@ -165,8 +165,8 @@ export default {
 				 }else if(that.$store.state.saveData.showDate==2){
 				 	var url=queryWeek;
 					var param={
-						weekStart:that.$store.state.saveData.weekDate[0],
-						weekEnd:that.$store.state.saveData.weekDate[1],
+						weekStart:that.$store.state.saveData.weekDate.slice(0,10),
+						weekEnd:that.$store.state.saveData.weekDate.slice(11),
 					}
 				 }else{
 				 	var url=queryDay;
