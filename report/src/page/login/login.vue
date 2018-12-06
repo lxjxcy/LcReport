@@ -50,16 +50,14 @@
 	</div>
 </template>
 <script>
-import echartLogin from "./echart-login.vue"
-import getnowtime from "../../mixins/nowTime.js"
-import md5 from 'js-md5';
+
+// import getnowtime from "../../mixins/nowTime.js"
+// import md5 from 'js-md5';
   import axios from 'axios';
  export default {
 
 	 name:"login",
-	 components:{
-	 	echartLogin
-	 },
+
 
 	 
 	 data(){
@@ -96,21 +94,38 @@ import md5 from 'js-md5';
 		 }
 		 
 	 },
-	 mixins: [getnowtime],
+	 // mixins: [getnowtime],
 	 mounted(){
+		 if(this.$store.state.isgoback==true){
+          this.loginForm.loginName=this.$route.params.loginForm
+					this.loginForm.password=this.$route.params.newPassword
+      }
 		 this.getImg()
 		 this.$store.commit('exitUser')
 	 },
 	methods: {
 		 //  获取验证码
 				getImg(){
-					axios.post("/report/user/getCode").then(res=>{
-						// if(res.data.code==0){
-							this.imgUrl= `data:image/jpeg;base64,`+res.data.data.base;
-							console.log(this.imgUrl)
-						// }
-						
-					})
+					var params={}
+					this.$api.getCode(params).then(res => {
+						console.log(res.code)
+						if(res.code==0){
+								this.imgUrl= `data:image/jpeg;base64,`+res.data.base;
+							}
+					 })
+				},
+				//当前时间
+				getnowTime(){
+					const startDate = moment().month(moment().month() - 1).startOf('month').valueOf();
+					var getmonth=moment(startDate).format("YYYY-MM");
+					var saveData={
+						monthDate:getmonth,
+						dayDate:"",
+						weekDate:"",
+						showDate:1,
+						otherDate:[],
+					}
+					this.$store.commit('saveDatainfo',saveData)
 				},
 		//提交
 		handleSubmit (loginForm) {	
@@ -124,22 +139,37 @@ import md5 from 'js-md5';
 						password:md5(that.loginForm.password),
 						code:that.loginForm.code
 					}
-					axios.get("/report/user/loginUser",{params:loginParam}).then(res=>{
+					this.$api.login(loginParam).then(res=>{
 						that.getImg()
 						that.loading=false;
-						if(res.data.code==0){
+						
+						if(res.code==0){
 							that.$store.commit('setToken',that.loginForm.loginName)
-							that.$store.commit('saveUserinfo',res.data.data)
+							that.$store.commit('saveUserinfo',res.data)
 							that.$router.push('/source/source')
-							
-						}else{
-							that.$Message.error(res.data.message);
+							debugger
 							that.getnowTime()
-							that.loginForm.code=="";
-							
-							 
+						}else{
+							that.$Message.error(res.message);
+							that.getnowTime()
+							that.loginForm.code="";
 						}	
-					})					
+					})
+// 					axios.get("/report/user/loginUser",{params:loginParam}).then(res=>{
+// 						that.getImg()
+// 						that.loading=false;
+// 						
+// 						if(res.data.code==0){
+// 							that.$store.commit('setToken',that.loginForm.loginName)
+// 							that.$store.commit('saveUserinfo',res.data.data)
+// 							that.$router.push('/source/source')
+// 							that.getnowTime()
+// 						}else{
+// 							that.$Message.error(res.data.message);
+// 							that.getnowTime()
+// 							that.loginForm.code="";
+// 						}	
+// 					})					
 				}
 			})
 		}

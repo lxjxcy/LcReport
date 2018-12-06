@@ -90,8 +90,8 @@
 		height:500px;
 		width:100%;
 		background: #fff;
-		padding:20px;
-		margin: 0 10px;
+		padding:40px 20px;
+		
 	}
 	
 

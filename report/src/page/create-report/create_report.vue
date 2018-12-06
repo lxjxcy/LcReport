@@ -1,6 +1,6 @@
 <template>
 	<div class="create_report">
-	<Tabs :value="indexname" @on-click="getName">
+	<Tabs :value="indexname" @on-click="getName" type="card">
         <TabPane label="月报" name="name1"><Cmonth></Cmonth></TabPane>
         <TabPane label="周报" name="name2"><Cweek></Cweek></TabPane>
         <TabPane label="日报" name="name3"><Cday></Cday></TabPane>
@@ -42,5 +42,11 @@
 </script>
 
 <style>
+	.ivu-tabs-bar{
+		margin-bottom: 0;
+	}
+	.create_report{
+		margin:10px;
+	}
 
 </style>

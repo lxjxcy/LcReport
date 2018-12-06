@@ -6,21 +6,29 @@ export default new Vuex.Store({
 		 userInfo:{
 			 
 		 },
+		 isgoback: false,
+		 orderSource:null,
 		 loadData:[],
 		 loading:false,
 		 token:null,
 		 saveData:{
 			 dayDate:"",
 			 monthDate:"",
-			 weekDate:"",
+			 otherDate:[],
+			 weekDate:" ",
 			 showDate:1,
 		 }
 	 },
 	 mutations:{
-		 // 存token
-		 setToken(state, token) {
-		  state.token = token;
-		  sessionStorage.setItem('token', token)
+		 // 存渠道
+		 setOrder(state, orderSource) {
+		  state.orderSource = orderSource;
+		  sessionStorage.setItem('order', orderSource)
+		},
+		// 存token
+		setToken(state, token) {
+			state.token = token;
+			sessionStorage.setItem('token', token)
 		},
 		// 存日期
 		saveDatainfo(state, data) {
@@ -35,14 +43,17 @@ export default new Vuex.Store({
 		//退出
 		exitUser(state) {
 		  state.token = null;
+			state.orderSource=null;
 		  state.userInfo={};
 			state.saveData={
 				dayDate:"",
 				monthDate:"",
 				weekDate:"",
+				otherDate:[],
 				showDate:1,
 			}
-		  sessionStorage.removeItem('token')
+		  sessionStorage.removeItem('order')
+			sessionStorage.removeItem('token')
 			sessionStorage.removeItem('saveData')
 		  sessionStorage.removeItem('userInfo')
          }

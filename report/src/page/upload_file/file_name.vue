@@ -5,6 +5,7 @@
 		 <Upload
         type="drag"
 				 :data="uploadData"  
+				 :show-upload-list="false"
 				action="/report/upload/uploadExcel"
 				:before-upload="handleBeforeUpload"
 				:on-success="handleSuccess"
@@ -16,38 +17,39 @@
             <p>文件上传</p>
         </div>
     </Upload>
+		<fileList ref="myfile"></fileList>
 	</div>
 	
 </template>
 
 <script>
 	import axios from "axios"
+	import fileList from "./file_List.vue"
 	export default {
 		name:"file_name",
+		components:{
+			fileList
+		},
 		data(){
 			return{
 				 websock: null,
 				 nowTime:"",
-				 startupload:"文件正在准备上传，请耐心等待。。。",
+				 startupload:"文件正在上传，请耐心等待。。。",
 				 uploadData:{
 					 type:"order1",
 					 sId:"01",
+					 userName:this.$store.state.userInfo.loginName
 				 },
 				 clock:"",
 				 hou:0,
 				 min:0,
 				 sec:0,
-				 
 			}
-			
 		},
-// 	destroyed(){
-// 		// this.websocket.onclose()
-//     this.websocketclose();
-// },
 		mounted(){	
 		},
 		methods: {
+			//计算时间
 			startTime(){				
 				this.clock = window.setInterval(() => {
 				 this.sec++;                                        
@@ -59,30 +61,38 @@
 				} 
 				var time=this.min+"分"+this.sec+"秒"
 				this.nowTime=time;
-				},1000)
-			  
+				},1000) 
 			},
+			//清除定时
 			cleartime(){
 				window.clearInterval(this.clock)
 			},
-				rnd(n, m){
+			//随机两位数
+			rnd(n, m){
 					var random = Math.floor(Math.random()*(m-n+1)+n);
 					return random;
 			},
+			//上传成功
 			handleSuccess(res,file,filelist){
-				// this.$Spin.hide();
-				console.log(res)
-				if(res.code==0){
-					// debugger
-					 this.startupload="文件正在上传中，请耐心等待。。。"
-					  this.startTime()
-						this.initWebSocket()	
+				this.cleartime()
+				if(res.code==0){	
+					 this.$Spin.hide()
+					 this.nowTime="";
+					 this.$Modal.success({
+					 	title: '提示',
+					 	content: '文件上传成功，系统正在处理数据，请查看上传记录状态',
+					 	onOk: () => {
+					 		this.$refs.myfile.getfileData();
+					 	},
+						
+					 });	
 					}else{
 						this.$Message.error(res.message);
 						this.$Spin.hide()
 							// this.websocketclose();
 					}
 			},
+			//上次错误
 			 handleFormatError (file) {
 					var filename=file.name;
 					var name=filename.split(".")
@@ -105,16 +115,11 @@
 					var name=filename.split(".")
 					var title="文件"+file.name+"不是.xls类型"
 		      	if(name[1]!='xls'&&name[1]!='xlsx'){
-// 					this.$Message.warning({
-// 						content: title,
-// 						duration: 5
-// 					});
 		      		return;
 		    }
-
+				this.startTime()
 					this.$Spin.show({
 						render: (h) => {
-							
 								return h('div', [
 										h('Icon', {							
 												'class': 'demo-spin-icon-load',
@@ -128,50 +133,53 @@
 								])
 						}
 					});
-				
-
-				
 				},
-				//初始化weosocket 
-				 initWebSocket(){ 
-　　　　　　　const wsuri = 'ws://101.37.124.231:8081/report/websocket/'+this.uploadData.sId;//ws地址
-　　　　　　　　this.websocket  = new WebSocket(wsuri); 
-　　　　　　　　this.websocket.onopen = this.websocketonopen;
-　　　　　　　　this.websocket.onerror = this.websocketonerror;
-　　　　　　　　this.websocket.onmessage = this.websocketonmessage; 
-					    this.websocket.onclose = this.websocketclose;
-	　　　　 },
-　         websocketonopen() {
-　　　　　　　　console.log("WebSocket连接成功");
-　　　　　　},
-　　　　　　websocketonerror(e) { //错误
-                this.$Spin.hide()
-								this.$Message.error("上传失败");
-　　　　　　},
-			    websocketclose(){
-							console.log('断开连接')
-					},
-　         websocketonmessage(e){ //数据接收 
-						 console.log(e)		
-							
-						 if(e.data==="0"){
-							 this.cleartime()
-							 this.$Message.success("上传成功");
-							 this.$Spin.hide()
-							 this.startupload="文件正在准备上传，请耐心等待。。。"
-							 this.nowTime="";
-							 // this.websocket.onclose()
-							 this.websocketclose();						 
-						 }else if(e.data==='1'){
-							 this.$Message.error("上传失败");
-							 this.$Spin.hide()
-							 this.cleartime()
-							 this.websocketclose();
-							 // this.websocket.onclose()
-						 }
-						  // this.websocket.close();	 
-						 
-　　　　　　},
+// 				//初始化weosocket 
+// 				 initWebSocket(){ 
+// 　　　　　　　const wsuri = 'ws://101.37.124.231:8081/report/websocket/'+this.uploadData.sId;//ws地址
+// 　　　　　　　　this.websocket  = new WebSocket(wsuri); 
+// 　　　　　　　　this.websocket.onopen = this.websocketonopen;
+// 　　　　　　　　this.websocket.onerror = this.websocketonerror;
+// 　　　　　　　　this.websocket.onmessage = this.websocketonmessage; 
+// 					    this.websocket.onclose = this.websocketclose;
+// 	　　　　 },
+// 　         websocketonopen() {
+// 　　　　　　　　console.log("WebSocket连接成功");
+// 　　　　　　},
+// 　　　　　　websocketonerror(e) { //错误
+//                 this.$Spin.hide()
+// 								this.$Message.error("上传失败");
+// 　　　　　　},
+// 			    websocketclose(){
+// 							console.log('断开连接')
+// 					},
+// 					//数据接收 
+// 　         websocketonmessage(e){ 
+// 						 console.log(e)				
+// 						 if(e.data==="0"){
+// // 							 this.cleartime()
+// // 							 this.$Spin.hide()
+// // 							 this.startupload="文件正在准备上传，请耐心等待。。。"
+// // 							 this.nowTime="";
+// // 							 this.$Modal.success({
+// // 							 		title: '提示',
+// // 							 		content: '文件上传成功，系统正在处理数据，请查看上传记录状态',
+// // 							 		onOk: () => {
+// // 							 			this.$refs.myfile.getfileData();
+// // 							 		},
+// // 							 });
+// 							 // this.websocket.onclose()
+// 							 this.websocketclose();						 
+// 						 }else if(e.data==='1'){
+// 							 this.$Message.error("上传失败");
+// 							 this.$Spin.hide()
+// 							 this.cleartime()
+// 							 this.websocketclose();
+// 							
+// 						 }
+// 						
+// 						 
+// 　　　　　　},
 
 		},
 		    
@@ -182,9 +190,8 @@
 
 <style scoped>
 	.file_name{
-		margin: 200px auto;
+		margin-top: 100px;
 	}
-	
 
 	
 	

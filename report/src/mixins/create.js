@@ -1,4 +1,4 @@
-import axios from "axios"
+// import axios from "axios"
 
 export default {
 	methods:{
@@ -6,21 +6,40 @@ export default {
 			if(this.reportdata==""){
 				this.$Message.warning("请选择日期");
 			}else{	
-				this.$store.state.loading=true;
-				if(day){
-					this.postreport(url,param,searchurl,sreachparam)
-				}else{
-					this.getreport(url,param,searchurl,sreachparam)
-				}
+				this.axios.get("/report/shell/validateOrderByCleanup").then(res=>{
+						if(res.data.code==0){
+								if(res.data.data){
+										this.$store.state.loading=true;
+										if(day){
+											this.postreport(url,param,searchurl,sreachparam)
+										}else{
+											this.getreport(url,param,searchurl,sreachparam)
+										}
+								}else{
+									this.$Modal.info({
+											title: '提示',
+											content: '您刚导入的数据正在处理中，请稍等几分钟再操作',
+											onOk: () => {
+												
+											},
+									});
+									
+								}
+						}
+				})
 			}
-		
-			
 		},
 		getreport(url,param,searchurl,sreachparam){
-			axios.get(searchurl,{params:sreachparam}).then(res=>{
+			this.axios.get(searchurl,{params:sreachparam}).then(res=>{
 				if(res.data.code==0){
 					if(res.data.data.rows.length==0){
-						this.startCreate(url,param)		
+						var removeParam={
+							needRemove:false
+						}
+						var createParam=Object.assign(removeParam,param)
+						this.startCreate(url,createParam)
+						
+						// this.startCreate(url,param)		
 					}else{
 						this.confirm (url,param,searchurl,sreachparam)
 					}
@@ -30,10 +49,15 @@ export default {
 			})	
 		},
 		postreport(url,param,searchurl,sreachparam){
-			axios.post(searchurl,sreachparam).then(res=>{
+			this.axios.post(searchurl,sreachparam).then(res=>{
 				if(res.data.code==0){
 					if(res.data.data.rows.length==0){
-						this.startCreate(url,param)		
+						var removeParam={
+							needRemove:false
+						}
+						var createParam=Object.assign(removeParam,param)
+						this.startCreate(url,createParam)
+							
 					}else{
 						this.confirm (url,param,searchurl,sreachparam)
 					}
@@ -57,7 +81,7 @@ export default {
 					])
 				}
 			});
-			axios.post(url,param).then(res=>{
+			this.axios.post(url,param).then(res=>{
 				this.$store.state.loading=false;
 				this.$Spin.hide()
 				if(res.data.code==0){
@@ -74,21 +98,26 @@ export default {
                     title: '提示',
                     content: '您选择的日期报表数据已存在，是否需要重新生成？',
                     onOk: () => {
-                        this.removeReport(url,param,searchurl,sreachparam)
+											var removeParam={
+												needRemove:true
+											}
+											var createParam=Object.assign(removeParam,param)
+											this.startCreate(url,createParam)
+                        // this.removeReport(url,param,searchurl,sreachparam)
                     },
                     onCancel: () => {
-						this.$store.state.loading=false;
+											this.$store.state.loading=false; 
                     }
                 });
         },
-		removeReport(url,param,searchurl,sreachparam){
-			axios.post("/report/shell/removeAll",sreachparam).then(res=>{
-				if(res.data.code==0){
-					this.startCreate(url,param)
-				}else{
-					
-				}
-			})
-		}
+// 		removeReport(url,param,searchurl,sreachparam){
+// 			axios.post("/report/shell/removeAll",sreachparam).then(res=>{
+// 				if(res.data.code==0){
+// 					this.startCreate(url,param)
+// 				}else{
+// 					
+// 				}
+// 			})
+// 		}
 	},
 }

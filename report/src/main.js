@@ -5,6 +5,8 @@ import App from './App'
 import store from './store/index.js'
 import router from './router'
 import axios from "./axiosconfig/index.js"
+import api from './api/'
+Vue.prototype.$api = api
 // import "./directive"
 // import {Option ,Modal ,Message ,Select ,Sider,RadioGroup,Col ,Row,DatePicker ,Input ,FormItem , Form ,Button, Radio,Dropdown,Icon,Card ,Menu,Upload,Breadcrumb,Table,Submenu,Page,DropdownMenu,DropdownItem,BreadcrumbItem,MenuItem} from 'iview';
 // Vue.component('Option',Option );
@@ -48,13 +50,14 @@ import 'iview/dist/styles/iview.css';
 // import global_ from './global.js'
 // Vue.prototype.GLOBAL = global_
 
-// axios.defaults.withCredentials = true;
-// Vue.prototype.axios = axios;
+axios.defaults.withCredentials = true;
+Vue.prototype.axios = axios;
 
  router.beforeEach((to, from, next) => {
 	 let token = store.state.token;
     if (to.matched.some(record => record.meta.Auth)) { // 判断该路由是否需要登录权限,能检测出带参数的路由
         if (token) {  // 通过vuex state获取当前的token是否存在
+				 iView.LoadingBar.start();
             next()
         } else {
             next({
@@ -63,11 +66,13 @@ import 'iview/dist/styles/iview.css';
             })
         }
     } else {
-
+			iView.LoadingBar.start();
         next()
     }
 })
-
+router.afterEach(route => {
+    iView.LoadingBar.finish();
+});
 
 if (JSON.parse(window.sessionStorage.getItem('userInfo'))) {
   store.commit('saveUserinfo', JSON.parse(window.sessionStorage.getItem('userInfo')))
@@ -78,7 +83,9 @@ if (JSON.parse(window.sessionStorage.getItem('saveData'))) {
 if (window.sessionStorage.getItem('token')) {
   store.commit('setToken', window.sessionStorage.getItem('token'))
 }
-
+if (window.sessionStorage.getItem('order')) {
+  store.commit('setOrder', window.sessionStorage.getItem('order'))
+}
 // Vue.prototype.$Message = Message;
 // Vue.prototype.$loading = Loading.service;
 // Vue.prototype.$Modal = Modal;

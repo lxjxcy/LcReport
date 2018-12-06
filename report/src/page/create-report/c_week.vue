@@ -9,6 +9,7 @@
 							<i-input icon="ivu-icon ivu-icon-ios-calendar-outline" ref="inputs" @on-change="InhandleChange" clearable @on-blur="removefocus" :value="reportdata" placeholder="请选择日期" style="width: 200px" @on-focus="focusClick()"></i-input>			
 							<div style="position: relative;left:0;top:-13px;">
 								<Date-picker
+								   show-week-numbers
 									:open="open"
 									:value="value3"
 									:options="options"
@@ -16,7 +17,7 @@
 									@on-change="handleChange"
 									@on-clear="handleClear"
 									@on-ok="handleOk">
-									<a href="javascript:void(0)" @click="handleClick">
+									<a href="javascript:void(0)">
 									</a>
 								</Date-picker>
 							</div>	
@@ -40,9 +41,7 @@
 
 <script>
 	import createD from "../../mixins/create.js"
-	import weekd from "../../mixins/weekdate.js"
-
-	let moment = require("moment");
+	import createWeek from "../../mixins/weekdateTop.js"
 	export default {
 		name:"c_week",
 		data(){
@@ -66,41 +65,66 @@
 				}
 			}
 		},
-		mixins: [createD,weekd],
+		mixins: [createD,createWeek],
 		methods:{
 			InhandleChange(){
 				this.reportdata="";
 			},
-// 			onChangeDate(value){
-// 				var date0=value[0].slice(0,4)+"/"+value[0].slice(5,7)+"/"+value[0].slice(8,10)
-// 				var date1=value[1].slice(0,4)+"/"+value[1].slice(5,7)+"/"+value[1].slice(8,10)
-// 				var aDate = new Date(date0);
-// 				var bDate = new Date(date1);
-// 				var aDay = 24 * 60 * 60 * 1000;
-// 				var diffDay = (bDate - aDate) / aDay; 
-// 				var nowday= new Date(value[0]).getDay()
-// 				console.log(nowday)
-// 				if(value[0]==''&&value[1]==''){
-// 					return
-// 				}else if(diffDay!=6||nowday!=5){	
-// 					this.$Modal.warning({
-// 								title: "提示",
-// 								content: "请选择时间为一周时间，开始时间为周五，结束时间为周四"
-// 						});
-// 					this.reportdata=[]	
-// 					return;
-// 				}
-// 				var date = new Date(value[1]);
-// 				var nowday=date.getDate();
-// 				let monthStart = date.setDate(nowday);
-// 				let oneDay=1000*60*60*24;
-// 				let lastDay = moment(monthStart+oneDay).format("YYYY-MM-DD");	
-// 				this.reportdata=value;
-// 				this.weekParam.weekStart=value[0];
-// 				this.weekParam.weekEnd=value[1];
-// 				this.weekParam.startTime=value[0]+" "+"00:00:00"
-// 				this.weekParam.endTime=lastDay+" "+"00:00:00"
-// 			},
+		handleChange(date) {	
+			this.value3 = date;
+			var now= new Date(date).getDay();
+			var nowDate=new Date(date).getDate();
+			let  nowday= new Date(date).setDate(nowDate);
+			let oneDay=1000*60*60*24;	
+			var lDay;
+			var nDay;			
+			switch(now){
+				case  1:
+					lDay=3*oneDay;
+					nDay=3*oneDay;
+				break;
+				case  2:
+					lDay=4*oneDay;
+					nDay=2*oneDay;
+				break;
+				case  3:
+					lDay=5*oneDay;
+					nDay=1*oneDay;
+				break;
+				case  4:
+					lDay=6*oneDay;
+					nDay=0*oneDay;
+				break;
+				case  5:
+					lDay=0*oneDay;
+					nDay=6*oneDay;
+				break;
+				case  6:
+					lDay=1*oneDay;
+					nDay=5*oneDay;
+				break;
+				case  0:
+					lDay=2*oneDay;
+					nDay=4*oneDay;
+				break;
+			}
+			this.getweek(nowday,lDay,nDay)
+		},
+		getweek(nowday,lDay,nDay){
+			let lastDays = moment(nowday-lDay).format("YYYY-MM-DD");	
+			let nextDay = moment(nowday+nDay).format("YYYY-MM-DD");
+			this.reportdata=lastDays+"-"+nextDay;
+			this.$refs.inputs.blur()
+			var date = new Date(nextDay);
+			var nowday=date.getDate();
+			let monthStart = date.setDate(nowday);
+			let oneDay=1000*60*60*24;
+			let lastDay = moment(monthStart+oneDay).format("YYYY-MM-DD");	
+			this.weekParam.weekStart=lastDays;
+			this.weekParam.weekEnd=nextDay;
+			this.weekParam.startTime=lastDays+" "+"00:00:00"
+			this.weekParam.endTime=lastDay+" "+"00:00:00"
+		},
 			create(){
 				var url="/report/shell/runWeek";
 				var searchurl="/report/channel/queryWeek"
@@ -122,8 +146,7 @@
 		height:500px;
 		width:100%;
 		background: #fff;
-		padding:20px;
-		margin: 0 10px;
+		padding:40px 20px;
 	}
 	
 

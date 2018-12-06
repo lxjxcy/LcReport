@@ -1,7 +1,7 @@
 <template>
 	<div class="home">
 		  <aside>		
-			    <Sider :style="{height: '100vh', overflow: 'auto'}">
+			    <Sider>
 						<div class="aside-log"></div>
             <Menu :active-name="activemenu" theme="dark" width="auto" :open-names="nameslist" @on-select="routeTo" @on-open-change="showName">
 							<!-- <MenuItem name="2"><Icon type="ios-cloud-upload-outline" />文件导入</MenuItem> -->
@@ -13,33 +13,41 @@
 									</template>
 									<MenuItem name="1-1"><Icon type="ios-chatbubbles-outline" />渠道维度</MenuItem>
 									<MenuItem name="1-2"><Icon type="ios-bug-outline" />分公司维度</MenuItem>
+									<!-- <MenuItem name="1-12"><Icon type="md-contacts" />用户维度</MenuItem> -->
 									<MenuItem name="1-11"><Icon type="ios-clipboard-outline" />整合方维度</MenuItem>
 									<!-- <MenuItem name="1-3"><Icon type="ios-calendar-outline" />应用维度</MenuItem> -->
 									<MenuItem name="1-4"><Icon type="ios-calendar-outline" />项目名称维度</MenuItem>
 									
-									<MenuItem name="1-5"><Icon type="ios-hammer" />商品名称维度</MenuItem>
+									<MenuItem name="1-5"><Icon type="ios-cart-outline" />商品名称维度</MenuItem>
+									
 									<MenuItem name="1-8"><Icon type="md-closed-captioning" />供应商维度</MenuItem>
-									
-									<MenuItem name="1-6"><Icon type="ios-cut-outline" />促销商品名称维度</MenuItem>	
-									<MenuItem name="1-7"><Icon type="ios-calendar-outline" />营销活动维度</MenuItem>
-									
+									<MenuItem name="1-6"><Icon type="md-cut" />促销商品名称维度</MenuItem>	
+									<MenuItem name="1-7"><Icon type="ios-card" />营销活动维度</MenuItem>
 									<!-- <MenuItem name="1-9"><Icon type="ios-clipboard-outline" />省份维度</MenuItem> -->
-									<MenuItem name="1-10"><Icon type="ios-cloud-circle-outline" />每日简报</MenuItem>
 							</Submenu>
 							 <Submenu name="2" v-if="this.$store.state.userInfo.userType==1">
                		<template slot="title">
 										<Icon type="ios-cloud-upload-outline" />             				
                				文件导入
                		</template>
-               		<MenuItem name="2-1"><Icon type="ios-cloud-upload-outline" />幸福绿城app</MenuItem>
+               		<MenuItem name="2-1"><Icon type="ios-appstore-outline" />幸福绿城app</MenuItem>
+									<MenuItem name="2-2"><Icon type="ios-basket" />幸福便利店</MenuItem>
                </Submenu>
 							 <Submenu name="3" v-if="this.$store.state.userInfo.userType==1">
 							 	<template slot="title">
-							 			<Icon type="md-color-filter" />
+							 			
+										<Icon type="ios-create-outline" />
 							 			报表生成
 							 	</template>
 							 	<MenuItem name="3-1"><Icon type="md-color-filter" />报表生成</MenuItem>
-							 </Submenu>						
+							 </Submenu>
+							 <!-- <Submenu name="4" v-if="this.$store.state.userInfo.userType==1">
+							 <template slot="title">
+									<Icon type="md-people" />
+									账户管理
+							 </template>
+							 <MenuItem name="4-1"><Icon type="ios-people-outline"/>账户列表</MenuItem>
+							 </Submenu>	 -->
             </Menu>
         </Sider>
 		  </aside>
@@ -64,20 +72,18 @@
 
 				  </div>
 			  </header>
-				<!-- <changePass ref="mychange" v-if="hackReset" @reload="reloadcom"></changePass> -->
+				<!-- <changePass ref="mychange" v-if="hackReset" @reload="reloadcom" v-on:backlogin="backLogin"></changePass> -->
 				
 				
 				<div class="content-center">
 					<router-view/>
 				</div>
-			 
 		  </main>
 	</div>
 	
 </template>
 
 <script>
-	import getnowtime from "../mixins/nowTime.js"
 	// import changePass from "../components/changePass.vue"
 	export default {
 		name:"home",
@@ -116,106 +122,155 @@
 							this.isCollapsed ? 'collapsed-menu' : ''
 					]
 			},
-			dataTime() {		
-				var hour = this.nowdate.getHours();
-				var year=this.nowdate.getFullYear()
-				var hour=hour >= 10 ? '' + hour : '0' + hour
-				var minute = this.nowdate.getMinutes();
-				var minute=minute >= 10 ? '' + minute : '0' + minute
-				var second = this.nowdate.getSeconds();
-				var month = this.nowdate.getMonth();
-				var date = this.nowdate.getDate();
-				var data=date >= 10 ? '' + date : '0' + date
-				return year+'-'+(month+1)+"-"+date+"  "+hour+":"+minute
+			dataTime() {
+			  let nowtime = moment(this.nowdate).format("YYYY-MM-DD HH:mm:ss");
+				return nowtime
 			},
 				
 		},
-		mixins: [getnowtime],
 		 methods: {
+			 //菜单收起
 			 showName(e){
-				 // debugger
+				 
 			 },
-			 //退出
-			 back(){
-				  this.$Modal.confirm({
-                    title: ' 提示',
-                    content: '您确定退出么?',
-                    onOk: () => {
-											 this.$store.commit('exitUser')
-                       this.$router.push('/')
-                    },
-                    onCancel: () => {
-                        this.$Message.info('Clicked cancel');
-                    }
-              });
-			 },
-			 //修改密码
+			 // 修改密码
 // 			 change(){
 // 				 this.$refs.mychange.changeModel();
 // 			 },
-// 			 // 刷新组件
-//        reloadcom(){
-//         this.hackReset = false
-//          this.$nextTick(() => {
-//             this.hackReset = true
-//          })
-//        },
+			 // 刷新组件
+       reloadcom(){
+        this.hackReset = false
+         this.$nextTick(() => {
+            this.hackReset = true
+         })
+       },
 				collapsedSider () {
 						this.$refs.side1.toggleCollapse();
 				},
-				//点击菜单跳转路由
-				routeTo(e){
+				//返回登录
+				backLogin(param){
+					this.$Modal.success({
+						title: '提示',
+						content: '密码修改成功，请重新登陆',
+						onOk: () => {
+							this.$set(this.$store.state,'isgoback',true)
+							this.$store.commit('exitUser')
+							this.$router.push({name:'login',params:param})
+						},
+					});
+				},
+				//退出
+				back(){
+					this.$Modal.confirm({
+						title: ' 提示',
+						content: '您确定退出么?',
+						onOk: () => {
+								this.$set(this.$store.state,'isgoback',true)
+								
+								var backparam={
+									loginForm:this.$store.state.userInfo.loginName,
+									newPassword:"",	
+								}
+								this.$router.push({name:'login',params:backparam}),
+								this.$store.commit('exitUser')
+						},
+						onCancel: () => {
+								this.$Message.info('取消退出');
+						}
+					});
+				},
+				clearRoutedate(){
 					this.$store.state.loadData=[];
 					this.$store.state.loading=false;
-					this.getnowTime()
-					if(e=="1-1"){
+					//当前时间
+					// getnowTime(){
+						const startDate = moment().month(moment().month() - 1).startOf('month').valueOf();
+						var getmonth=moment(startDate).format("YYYY-MM");
+						var saveData={
+							monthDate:getmonth,
+							dayDate:"",
+							weekDate:"",
+							otherDate:[],
+							showDate:1,
+						}
+						this.$store.commit('saveDatainfo',saveData)
+						this.$store.commit('setOrder',null)
+				},
+				//点击菜单跳转路由
+				routeTo(e){
+					let path = this.$route.matched[1].path  
+					if(path.indexOf('/source')!=0&&e=="1-1"){
+						this.clearRoutedate()
 						this.$router.push("/source/source");
 					}
-					if(e=="1-2"){
+					if(path.indexOf('/company_name')!=0&&e=="1-2"){
+						this.clearRoutedate()
 						this.$router.push("/company_name");
 					}
-					if(e=="1-3"){
+					if(path.indexOf('/use_name')!=0&&e=="1-3"){
+						this.clearRoutedate()
 						this.$router.push("/use_name");
 					}
-					if(e=="1-4"){
+					if(path.indexOf('/project_name')!=0&&e=="1-4"){
+						this.clearRoutedate()
 						this.$router.push("/project_name");
 					}
-					if(e=="1-5"){
+					if(path.indexOf('/product_name')!=0&&e=="1-5"){
+						this.clearRoutedate()
 						this.$router.push("/product_name");
 					}
-					if(e=="1-6"){
+					if(path.indexOf('/sales_name')!=0&&e=="1-6"){
+						this.clearRoutedate()
 						this.$router.push("/sales_name");
 					}
-					if(e=="1-7"){
+					if(path.indexOf('/activity_name')!=0&&e=="1-7"){
+						this.clearRoutedate()
 						this.$router.push("/activity_name");
 					}
-					if(e=="1-8"){
+					if(path.indexOf('/supplier_name')!=0&&e=="1-8"){
+						this.clearRoutedate()
 						this.$router.push("/supplier_name");
 					}
-					if(e=="1-9"){
+					if(path.indexOf('/province_name')!=0&&e=="1-9"){
+						this.clearRoutedate()
 						this.$router.push("/province_name");
 					}
-					if(e=="1-10"){
+					if(path.indexOf('/daily')!=0&&e=="1-10"){
+						this.clearRoutedate()
 						this.$router.push("/daily");
 					}
-					if(e=="1-11"){
+					if(path.indexOf('/integration')!=0&&e=="1-11"){
+						this.clearRoutedate()
 						this.$router.push("/integration");
 					}
-					if(e=="2-1"){
-						this.$router.push("/upload_file/file_name");
+					if(path.indexOf('/user_name')!=0&&e=="1-12"){
+						this.clearRoutedate()
+						this.$router.push("/user_name");
 					}
-					if(e=="3-1"){
+					if(path.indexOf('/upload_file/order1')!=0&&e=="2-1"){
+						this.clearRoutedate()
+						this.$router.push("/upload_file/order1");
+					}
+					if(path.indexOf('/upload_file/order2')!=0&&e=="2-2"){
+						this.clearRoutedate()
+						this.$router.push("/upload_file/order2");
+					}
+					if(path.indexOf('/create-report/create_report')!=0&&e=="3-1"){
+						this.clearRoutedate()
 						this.$router.push("/create-report/create_report");
 					}
-					 
+					if(path.indexOf('/user-manage/userlist')!=0&&e=="4-1"){
+						this.clearRoutedate()
+						this.$router.push("/user-manage/userlist");
+					}
 				},
 				//刷新菜单高亮不变
 				menuList(){ 
-          let path = this.$route.matched[1].path  
+					let path = this.$route.matched[1].path  
 					// 获取到地址拦上#号后面的url地址
-             if(path.indexOf('/source/source') == 0||path.indexOf('/source/day_report') == 0||path.indexOf('/source/second_source') == 0){
-                this.activemenu = "1-1"
-              }
+						if(path.indexOf('/source/source') == 0||path.indexOf('/source/day_report') == 0||path.indexOf('/source/second_source') == 0){
+								this.activemenu = "1-1"
+							}
 							if(path.indexOf('/company_name') == 0){
 								this.activemenu = "1-2"
 							}
@@ -246,14 +301,22 @@
 							if(path.indexOf('/integration') == 0){
 								this.activemenu = "1-11"
 							}
-							if(path.indexOf('/upload_file/file_name') == 0){
+							if(path.indexOf('/upload_file/order1') == 0){
 								this.activemenu = "2-1"
+							}
+							if(path.indexOf('/upload_file/order2') == 0){
+								this.activemenu = "2-2"
 							}
 							if(path.indexOf('/create-report/create_report') == 0){
 								this.activemenu = "3-1"
 							}
-         }						
-						
+							if(path.indexOf('/user-manage/userlist') == 0){
+								this.activemenu = "4-1"
+							}
+							if(path.indexOf('/user_name') == 0){
+								this.activemenu = "1-12"
+							}
+				}								
      }
 	}
 </script>
@@ -273,8 +336,12 @@
 		  background: #4f5a6d;
 		 height:100%;
 		overflow:hidden;
-         overflow-y:auto;
+    overflow-y:auto;
 	}
+	
+aside::-webkit-scrollbar {
+    display: none;
+}
 	main{
 		flex: 1;
 		background: #f5f7f9;

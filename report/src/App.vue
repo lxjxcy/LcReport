@@ -28,7 +28,7 @@ ul{
 	float: right;
 }
 .report{
-	/* height:80px; */
+	height:80px;
 	background: #fff;
 	width:100%;
 	margin-bottom:10px;
@@ -94,6 +94,11 @@ ul{
 	//按钮图标大小
 	.ivu-btn>.ivu-icon{
 		font-size: 16px !important;
+	}
+
+th .ivu-table-cell{
+		padding-left:5px !important;
+		padding-right:5px !important;
 	}
 /* .echartbox{
 	margin:15px;

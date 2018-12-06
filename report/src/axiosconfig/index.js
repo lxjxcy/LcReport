@@ -1,24 +1,19 @@
 import axios from 'axios'
 import router from '../router/index.js'
 import store from '../store/index.js'
-
+// import global from '../global.js'
 
 import Vue from 'vue'
-// import {
-// 	Message,
-// 	Loading
-// } from 'element-ui'
-
 var vueInstance = new Vue()
 
 var instance = axios.create({
 	timeout: 600000,
+	// baseURL: "http://101.37.124.231:8081",
 	headers: {
 		'Content-Type': 'application/json; charset=UTF-8',
 		'X-Requested-With': 'XMLHttpRequest'
 	}
 })
-
 instance.interceptors.request.use(
 	config => {
 		if (store.state.token) {
@@ -62,4 +57,35 @@ function isNotLogin(data) {
 	return code === '401'
 }
 
+export function post (url, params) {
+ return new Promise((resolve, reject) => {
+  axios
+   .post(url, params)
+   .then(
+    res => {
+     resolve(res.data)
+    },
+    err => {
+     reject(err.data)
+    }
+   )
+   .catch(err => {
+    reject(err.data)
+   })
+ })
+}
+export function get (url, params) {
+ return new Promise((resolve, reject) => {
+  axios
+   .get(url, {
+    params: params
+   })
+   .then(res => {
+    resolve(res.data)
+   })
+   .catch(err => {
+    reject(err.data)
+   })
+ })
+}
 export default instance
