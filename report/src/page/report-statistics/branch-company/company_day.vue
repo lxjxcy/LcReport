@@ -5,7 +5,12 @@
 		</div>
 		<div class="all">
 			<dayTop v-on:getExcel="downExcel"></dayTop>
-			<Table height="400" @on-sort-change="startSort" :loading="loading" border :columns="columns" :data="data"></Table>
+			<Table height="400"
+			 @on-sort-change="startSort" 
+			 :loading="loading" border 
+			 :columns="columns"
+			  :data="data">
+			 </Table>
 			<div class="pages"><span class="inpage"><Page :total="total" show-sizer show-total @on-page-size-change="changeSize" @on-change="changePage"/></span></div>
 		</div>
 	</div>

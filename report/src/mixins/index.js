@@ -51,7 +51,7 @@ export default {
 				this.startPage()
 			}
 			if(data=="周报"){
-				this.columns[0].title=mianTitle+"周报表("+this.$store.state.saveData.weekDate.slice(0,10)+"——"+this.$store.state.saveData.weekDate.slice(11)+"  )"
+				this.columns[0].title=mianTitle+"周报表("+this.$store.state.saveData.weekDate.slice(0,10)+"~"+this.$store.state.saveData.weekDate.slice(11)+"  )"
 				this.startPage()
 			}
 			if(data=="日报"){
@@ -160,7 +160,7 @@ export default {
 				}
 				this.showSend(date)
 			}else if(this.$store.state.saveData.showDate==2){
-				this.columns[0].title=mianTitle+"周报表"+" ( "+this.$store.state.saveData.weekDate.slice(0,10)+"——"+this.$store.state.saveData.weekDate.slice(11)+"  )";;
+				this.columns[0].title=mianTitle+"周报表"+" ( "+this.$store.state.saveData.weekDate.slice(0,10)+"~"+this.$store.state.saveData.weekDate.slice(11)+"  )";;
 				var date={
 					weekStart:this.$store.state.saveData.weekDate.slice(0,10),
 					weekEnd:this.$store.state.saveData.weekDate.slice(11),
@@ -184,7 +184,7 @@ export default {
 				this.showSend(date)
 				
 			}else{
-				this.columnsother[0].title=mianTitle+"报表"+" ( "+this.$store.state.saveData.otherDate[0]+"——"+this.$store.state.saveData.otherDate[1]+"  )";
+				this.columnsother[0].title=mianTitle+"报表"+" ( "+this.$store.state.saveData.otherDate[0]+"~"+this.$store.state.saveData.otherDate[1]+"  )";
 				var date={
 					start:this.$store.state.saveData.otherDate[0],
 					end:this.$store.state.saveData.otherDate[1],
@@ -336,18 +336,13 @@ export default {
 					if(arr[i].hasOwnProperty("total_price")){
 						arr[i]["total_price"]=arr[i].total_price.toFixed(2);
 					}
-					if(arr[i].hasOwnProperty("total_price")){
-						arr[i]["total_price"]=arr[i].total_price.toFixed(2);
-					}
 					if(arr[i].hasOwnProperty("deductibleTotal")){
 						arr[i]["deductibleTotal"]=arr[i].deductibleTotal.toFixed(2);
 					}
 					if(arr[i].hasOwnProperty("deductible_total")){
 						arr[i]["deductible_total"]=arr[i].deductible_total.toFixed(2);
 					}
-				
 				 }
-				
 				 return arr;
 			 },
 			 

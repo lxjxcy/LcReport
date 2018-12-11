@@ -126,15 +126,14 @@
 			this.weekParam.endTime=lastDay+" "+"00:00:00"
 		},
 			create(){
-				var url="/report/shell/runWeek";
-				var searchurl="/report/channel/queryWeek"
+				var url=this.$api.runWeek;
 				var param=this.weekParam;
 				var sreachparam={
 					weekStart:this.weekParam.weekStart,
 					weekEnd:this.weekParam.weekEnd,
 				}
 				var day=false;
-				this.createReport(url,param,searchurl,sreachparam,day)
+				this.createReport(url,param,sreachparam,day)
 			}
 		}
 		

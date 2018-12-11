@@ -52,7 +52,7 @@ export default{
 		getweek(nowday,lDay,nDay){
 			let lastDays = moment(nowday-lDay).format("YYYY-MM-DD");	
 			let nextDay = moment(nowday+nDay).format("YYYY-MM-DD");
-			var title=this.search2.reportType+"     (     "+lastDays+"——"+nextDay+" ) "	
+			var title=this.search2.reportType+"     (     "+lastDays+"~"+nextDay+" ) "	
 			this.$refs.inputs.blur()
 			this.$emit("getTitle",title)
 			var Dateparam={
@@ -82,6 +82,7 @@ export default{
 		//改变单选
 		changeModel(value){
 			this.$store.commit('setOrder',null)
+			this.orderSource=null;
 			var now=new Date()
 			var nowday= new Date().getDay();
 			var getday=moment(now.getTime()-24*60*60*1000).format("YYYY-MM-DD");	
@@ -196,7 +197,7 @@ export default{
 					this.$emit("getDateparam",Dateparam)
 				}
 				else if(this.$store.state.saveData.showDate==4){
-					var title="报表    (     "+value[0]+"——"+value[1]+" ) "	
+					var title="报表    (     "+value[0]+"~"+value[1]+" ) "	
 					let date0 = moment(value[0]).format("YYYY-MM-DD");
 					let date1 = moment(value[1]).format("YYYY-MM-DD");
 					var aDate = new Date(date0);

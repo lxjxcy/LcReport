@@ -78,14 +78,13 @@
 				this.dayParam.endTime=lastDay+" "+"00:00:00"			
 			},
 			create(){
-				var url="/report/shell/runDay";
-				var searchurl="/report/channel/queryDay"
+				var url=this.$api.runDay;
 				var param=this.dayParam;
 				var sreachparam={
 					date:this.dayParam.date,
 				}
 				var day=true;
-				this.createReport(url,param,searchurl,sreachparam,day)
+				this.createReport(url,param,sreachparam,day)
 			},
 			
 		}

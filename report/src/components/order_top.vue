@@ -22,7 +22,7 @@
 							<DatePicker v-if="showDate==4&&hackReset" @on-clear="clearData" :options="options"  style="width: 200px;" @on-change="onChangeDate" type="daterange" format="yyyy-MM-dd" show-week-numbers  placeholder="请选择日期"  :value="this.$store.state.saveData.otherDate"></DatePicker>
 							<!-- 周报 -->
 							<div v-if="showDate==2">
-								<i-input  icon="ivu-icon ivu-icon-ios-calendar-outline" ref="inputs" @on-change="clearData" clearable @on-blur="removefocus"  v-model="this.$store.state.saveData.weekDate" placeholder="请选择日期" style="width: 200px" @on-focus="focusClick()"></i-input>			
+								<i-input suffix="ivu-icon ivu-icon-ios-calendar-outline" ref="inputs" @on-change="clearData" clearable @on-blur="removefocus"  :value="this.$store.state.saveData.weekDate" placeholder="请选择日期" style="width: 200px" @on-focus="focusClick()"></i-input>			
 								<div style="position: relative;left:0;top:-13px;">
 									<Date-picker
 										:open="open"
@@ -199,7 +199,6 @@
 				this.orderSource=null;
 				this.$emit("clearPage")
 				this.$emit("getClear")
-				
 			},
 			//选择渠道
 			changeOrder(e){

@@ -20,7 +20,19 @@ export default {
 		getDayData(url,mianTitle,sendTitle,ifdata){
 			var that=this;
 			that.loading=true;
-			that.columns[0].title=mianTitle+"（"+that.$route.query.title+"）"
+			let path = this.$route.matched[1].path  
+			if(
+				(that.$store.state.saveData.showDate==4&&path.indexOf('/integration/integration_sec') == 0)
+				||(that.$store.state.saveData.showDate==4&&path.indexOf('/source/second_source') == 0)
+					||(that.$store.state.saveData.showDate==4&&path.indexOf('/company_name/product_detail') == 0)){
+					that.columnsother[0].title=mianTitle+"（"+that.$route.query.title+"）"
+				
+				}else{
+					that.columns[0].title=mianTitle+"（"+that.$route.query.title+"）"
+				}
+			
+			
+
 			var monthparam=that.getparams(ifdata)
 			var param=Object.assign(monthparam, sendTitle,that.pageParam,that.sortParam)
 			
@@ -152,9 +164,6 @@ export default {
 			if(arr[i].hasOwnProperty("total_price")){
 				arr[i]["total_price"]=arr[i].total_price.toFixed(2);
 			}
-			if(arr[i].hasOwnProperty("total_price")){
-				arr[i]["total_price"]=arr[i].total_price.toFixed(2);
-			}
 			if(arr[i].hasOwnProperty("deductibleTotal")){
 				arr[i]["deductibleTotal"]=arr[i].deductibleTotal.toFixed(2);
 			}
@@ -172,16 +181,20 @@ export default {
 		           let path = this.$route.matched[1].path  
 		
 	　　　　　　　　const { export_json_to_excel } = require('@/vendor/Export2Excel');
-	              var title=this.columns[0].title;
+	              // var title=this.columns[0].title;
 	
 					if(
 					(this.$store.state.saveData.showDate==4&&path.indexOf('/integration/integration_sec') == 0)
 					||(this.$store.state.saveData.showDate==4&&path.indexOf('/source/second_source') == 0)
   					||(this.$store.state.saveData.showDate==4&&path.indexOf('/company_name/product_detail') == 0)){
 						var data = this.formatJson(this.filterValother, this.$store.state.loadData);
+						var title=this.columnsother[0].title;
+
 						export_json_to_excel(this.tHeaderother, data, title);
+					
 					}else{
 						var data = this.formatJson(this.filterVal, this.$store.state.loadData);
+						var title=this.columns[0].title;
 						export_json_to_excel(this.tHeader, data, title);
 					}
 					this.$store.state.loading=false;

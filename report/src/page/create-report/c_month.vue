@@ -68,16 +68,14 @@
 				this.monthParam.endTime=lastmonth+" "+"00:00:00"
 			},
 			create(){
-				var url="/report/shell/runMonth";
-				var searchurl="/report/channel/queryMonth";
-				
+				var url=this.$api.runMonth;
 				var sreachparam={
 					month:this.monthParam.month
 				}
 				var param=this.monthParam;
 				var day=false;
 				
-				this.createReport(url,param,searchurl,sreachparam,day)
+				this.createReport(url,param,sreachparam,day)
 				
 			}
 		}

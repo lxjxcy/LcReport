@@ -17,6 +17,18 @@ export default {
 	fileLog(params){
 		return get('/report/log/queryFileUploadLogs', params)
 	},
+	//数据是否清洗完成
+	cleanOut(params){
+		return get('/report/shell/validateOrderByCleanup', params)
+	},
+	//查看是否已生成报表
+	existReport(params){
+		return post('/report/channel/existReport', params)
+	},
+	//
+	runMonth:"report/shell/runMonth",//生成月报表
+	runWeek:"report/shell/runWeek",//生成周报表
+	runDay:"report/shell/runDay",//生成日报表
 	//渠道维度
 	channelMonth:"/report/channel/queryMonth",//月
 	channelWeek:"/report/channel/queryWeek",//周

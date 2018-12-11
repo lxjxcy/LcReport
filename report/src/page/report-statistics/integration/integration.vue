@@ -240,7 +240,7 @@
 															this.$router.push({
 																path: '/integration/integration_sec',
 																query: {
-																	title: params.row.integrationParty
+																	title: params.row._id
 																}
 																})
 															

@@ -2,19 +2,17 @@
 
 export default {
 	methods:{
-		createReport(url,param,searchurl,sreachparam,day){
+		createReport(url,param,sreachparam,day){
 			if(this.reportdata==""){
 				this.$Message.warning("请选择日期");
 			}else{	
-				this.axios.get("/report/shell/validateOrderByCleanup").then(res=>{
-						if(res.data.code==0){
-								if(res.data.data){
+				var clearParam={};
+				//查看是否清洗数据完成
+				this.$api.cleanOut(clearParam).then(res=>{
+						if(res.code==0){
+								if(res.data){
 										this.$store.state.loading=true;
-										if(day){
-											this.postreport(url,param,searchurl,sreachparam)
-										}else{
-											this.getreport(url,param,searchurl,sreachparam)
-										}
+										this.postreport(url,param,sreachparam)
 								}else{
 									this.$Modal.info({
 											title: '提示',
@@ -29,29 +27,11 @@ export default {
 				})
 			}
 		},
-		getreport(url,param,searchurl,sreachparam){
-			this.axios.get(searchurl,{params:sreachparam}).then(res=>{
-				if(res.data.code==0){
-					if(res.data.data.rows.length==0){
-						var removeParam={
-							needRemove:false
-						}
-						var createParam=Object.assign(removeParam,param)
-						this.startCreate(url,createParam)
-						
-						// this.startCreate(url,param)		
-					}else{
-						this.confirm (url,param,searchurl,sreachparam)
-					}
-				}else{
-				  this.$Message.error(res.data.message)
-				}
-			})	
-		},
-		postreport(url,param,searchurl,sreachparam){
-			this.axios.post(searchurl,sreachparam).then(res=>{
-				if(res.data.code==0){
-					if(res.data.data.rows.length==0){
+		//查看是否有报表
+		postreport(url,param,sreachparam){
+			this.$api.existReport(sreachparam).then(res=>{
+				if(res.code==0){
+					if(res.data==0){
 						var removeParam={
 							needRemove:false
 						}
@@ -59,13 +39,14 @@ export default {
 						this.startCreate(url,createParam)
 							
 					}else{
-						this.confirm (url,param,searchurl,sreachparam)
+						this.confirm(url,param,sreachparam)
 					}
 				}else{
-				this.$Message.error(res.data.message)
+				this.$Message.error(res.message)
 				}
 			})	
 		},
+		//开始生成报表
 		startCreate(url,param){
 			this.$Spin.show({
 				render: (h) => {
@@ -77,7 +58,7 @@ export default {
 									size: 18
 							},
 						}),
-						h('div', "报表生成中，请耐心等待。。。"),
+						h('div', "报表生成中，请耐心等待，不要刷新或关闭页面"),
 					])
 				}
 			});
@@ -93,7 +74,8 @@ export default {
 			})
 			
 		},
-		 confirm (url,param,searchurl,sreachparam) {
+		//是否需要重新生成
+		 confirm (url,param,sreachparam) {
                 this.$Modal.confirm({
                     title: '提示',
                     content: '您选择的日期报表数据已存在，是否需要重新生成？',

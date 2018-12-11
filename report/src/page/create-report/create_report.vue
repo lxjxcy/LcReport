@@ -13,7 +13,6 @@
 	import Cweek from "./c_week.vue"
 	import Cday from "./c_day.vue"
 	export default {
-		
 		name:"create_report",
 		components:{
 			Cweek,
