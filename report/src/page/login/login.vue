@@ -147,7 +147,6 @@
 							that.$store.commit('setToken',that.loginForm.loginName)
 							that.$store.commit('saveUserinfo',res.data)
 							that.$router.push('/source/source')
-							debugger
 							that.getnowTime()
 						}else{
 							that.$Message.error(res.message);

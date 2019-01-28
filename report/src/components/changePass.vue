@@ -66,7 +66,7 @@
 										password:md5(this.formChange.password),
 										newPassword:md5(this.formChange.newPassword),	
 									}
-									this.$api.login(param).then(res=>{
+									this.$api.changePass(param).then(res=>{
 										if(res.code==0){
 											// this.$Message.success(res.data.message);
 											this.modal=false;

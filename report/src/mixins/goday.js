@@ -222,18 +222,6 @@ export default {
 			}else{
 				var action=0
 			}
-// 			var str=0;
-// 			for(var i=0;i<e.key.length;i++){				
-// 				if(/[A-Z]/.test(e.key[i])){
-// 						str=i
-// 				}
-// 			}
-// 			if(str!=0){
-// 				var vlaue=(e.key).toLowerCase();
-// 				var sortField=(vlaue).slice(0,str)+"_"+(vlaue).slice(str)	
-// 			}else{
-// 				var sortField=e.key
-// 			}
 			this.sortParam={
 				action:action,
 				sortField:e.key

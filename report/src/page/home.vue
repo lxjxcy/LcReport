@@ -6,48 +6,45 @@
             <Menu :active-name="activemenu" theme="dark" width="auto" :open-names="nameslist" @on-select="routeTo" @on-open-change="showName">
 							<!-- <MenuItem name="2"><Icon type="ios-cloud-upload-outline" />文件导入</MenuItem> -->
               
-							<Submenu name="1">
+							<Submenu name="1" v-if="reportStatistics">
 									<template slot="title">
 											<Icon type="md-book" />
 											报表统计
 									</template>
-									<MenuItem name="1-1"><Icon type="ios-chatbubbles-outline" />渠道维度</MenuItem>
-									<MenuItem name="1-2"><Icon type="ios-bug-outline" />分公司维度</MenuItem>
-									<!-- <MenuItem name="1-12"><Icon type="md-contacts" />用户维度</MenuItem> -->
-									<MenuItem name="1-11"><Icon type="ios-clipboard-outline" />整合方维度</MenuItem>
-									<!-- <MenuItem name="1-3"><Icon type="ios-calendar-outline" />应用维度</MenuItem> -->
-									<MenuItem name="1-4"><Icon type="ios-calendar-outline" />项目名称维度</MenuItem>
-									
-									<MenuItem name="1-5"><Icon type="ios-cart-outline" />商品名称维度</MenuItem>
-									
-									<MenuItem name="1-8"><Icon type="md-closed-captioning" />供应商维度</MenuItem>
-									<MenuItem name="1-6"><Icon type="md-cut" />促销商品名称维度</MenuItem>	
-									<MenuItem name="1-7"><Icon type="ios-card" />营销活动维度</MenuItem>
-									<!-- <MenuItem name="1-9"><Icon type="ios-clipboard-outline" />省份维度</MenuItem> -->
+									<MenuItem v-if="source" name="1-1"><Icon type="ios-chatbubbles-outline" />渠道维度</MenuItem>
+									<MenuItem v-if="branchCompany" name="1-2"><Icon type="ios-bug-outline" />分公司维度</MenuItem>
+									<MenuItem v-if="usersReport" name="1-12"><Icon type="md-contacts" />用户维度</MenuItem>
+									<MenuItem v-if="integration" name="1-11"><Icon type="ios-clipboard-outline" />整合方维度</MenuItem>
+									<MenuItem v-if="projectName" name="1-4"><Icon type="ios-calendar-outline" />项目名称维度</MenuItem>
+									<MenuItem v-if="productName" name="1-5"><Icon type="ios-cart-outline" />商品名称维度</MenuItem>
+									<MenuItem v-if="supplier" name="1-8"><Icon type="md-closed-captioning" />供应商维度</MenuItem>
+									<MenuItem v-if="salesProduct" name="1-6"><Icon type="md-cut" />促销商品名称维度</MenuItem>	
+									<MenuItem v-if="marketActivity" name="1-7"><Icon type="ios-card" />营销活动维度</MenuItem>
 							</Submenu>
-							 <Submenu name="2" v-if="this.$store.state.userInfo.userType==1">
+							 <Submenu name="2" v-if="uploadFile">
                		<template slot="title">
 										<Icon type="ios-cloud-upload-outline" />             				
                				文件导入
                		</template>
-               		<MenuItem name="2-1"><Icon type="ios-appstore-outline" />幸福绿城app</MenuItem>
-									<MenuItem name="2-2"><Icon type="ios-basket" />幸福便利店</MenuItem>
+               		<MenuItem v-if="lvcheng_app" name="2-1"><Icon type="ios-appstore-outline" />幸福绿城app</MenuItem>
+									<MenuItem v-if="shop_stores" name="2-2"><Icon type="ios-basket" />幸福便利店</MenuItem>
                </Submenu>
-							 <Submenu name="3" v-if="this.$store.state.userInfo.userType==1">
+							 <Submenu name="3" v-if="createReport">
 							 	<template slot="title">
 							 			
 										<Icon type="ios-create-outline" />
 							 			报表生成
 							 	</template>
-							 	<MenuItem name="3-1"><Icon type="md-color-filter" />报表生成</MenuItem>
+							 	<MenuItem v-if="create_report" name="3-1"><Icon type="md-color-filter" />报表生成</MenuItem>
 							 </Submenu>
-							 <!-- <Submenu name="4" v-if="this.$store.state.userInfo.userType==1">
-							 <template slot="title">
-									<Icon type="md-people" />
-									账户管理
-							 </template>
-							 <MenuItem name="4-1"><Icon type="ios-people-outline"/>账户列表</MenuItem>
-							 </Submenu>	 -->
+							 <Submenu name="4" v-if="this.$store.state.userInfo.userType==1">
+								 <template slot="title">
+										<Icon type="md-people" />
+										账户管理
+								 </template>
+								 <MenuItem name="4-1"><Icon type="ios-people-outline"/>用户列表</MenuItem>
+								 <MenuItem name="4-2"><Icon type="ios-people-outline"/>角色列表</MenuItem>
+							 </Submenu>	
             </Menu>
         </Sider>
 		  </aside>
@@ -65,14 +62,14 @@
 										</a>
 										<DropdownMenu slot="list" style="text-align: center;">
 												<DropdownItem ><span @click="back()" style="display: block;">退出</span></DropdownItem>
-												<!-- <DropdownItem ><span @click="change()" style="display: block;">修改密码</span></DropdownItem> -->
+												<DropdownItem ><span @click="change()" style="display: block;">修改密码</span></DropdownItem>
 										</DropdownMenu>
 								</Dropdown>
 						</div>
 
 				  </div>
 			  </header>
-				<!-- <changePass ref="mychange" v-if="hackReset" @reload="reloadcom" v-on:backlogin="backLogin"></changePass> -->
+				<changePass ref="mychange" v-if="hackReset" @reload="reloadcom" v-on:backlogin="backLogin"></changePass>
 				
 				
 				<div class="content-center">
@@ -84,12 +81,12 @@
 </template>
 
 <script>
-	// import changePass from "../components/changePass.vue"
+	import changePass from "../components/changePass.vue"
 	export default {
 		name:"home",
-// 		components:{
-// 			changePass,
-// 		},
+		components:{
+			changePass,
+		},
 		
 		data(){
 			return{
@@ -97,12 +94,85 @@
 				hackReset:true,
 				activemenu:"1-1",
 				value2:0,
-				nameslist:["1"]
-			
+				nameslist:["1"],
+				reportStatistics:false,
+				createReport:false,
+				uploadFile:false,
+				source:false,
+				branchCompany:false,
+				integration:false,
+				marketActivity:false,
+				productName:false,
+				projectName:false,
+				salesProduct:false,
+				supplier:false,
+				create_report:false,
+				lvcheng_app:false,
+				shop_stores:false,
+				usersReport:false,
 			}
 		},
+		created() {
+			var that = this;  
+			var permissionList=that.$store.state.userInfo.permissionList
+			permissionList.forEach((element, index, array)=>{
+				if(array[index].permissionId==1){
+					this.reportStatistics=true
+				}
+				if(array[index].permissionId==2){
+					this.uploadFile=true
+				}
+				if(array[index].permissionId==3){
+					this.createReport=true
+				}
+					if(array[index].permissionList!=null){
+						array[index].permissionList.forEach((e, i, arr)=>{
+							
+							if(arr[i].permissionId==4){
+									this.source=true
+							}
+							if(arr[i].permissionId==5){
+									this.branchCompany=true
+							}
+							if(arr[i].permissionId==6){
+									this.integration=true
+							}
+							if(arr[i].permissionId==7){
+									this.projectName=true
+							}
+							if(arr[i].permissionId==8){
+									this.productName=true
+							}
+							if(arr[i].permissionId==9){
+									this.supplier=true
+							}
+							if(arr[i].permissionId==10){
+									this.salesProduct=true
+							}
+							if(arr[i].permissionId==11){
+									this.marketActivity=true
+							}
+							if(arr[i].permissionId==12){
+									this.lvcheng_app=true
+							}
+							if(arr[i].permissionId==13){
+									this.shop_stores=true
+							}
+							if(arr[i].permissionId==14){
+									this.create_report=true
+							}
+							if(arr[i].permissionId==15){
+									this.usersReport=true
+							}
+							
+						})
+					}
+					
+			})
+			
+		},
 		mounted(){
-			var that = this;                    
+			var that = this;  				
 			that.time = setInterval(function() {
 					that.nowdate = new Date();//修改数据date
 			}, 1000);
@@ -134,9 +204,9 @@
 				 
 			 },
 			 // 修改密码
-// 			 change(){
-// 				 this.$refs.mychange.changeModel();
-// 			 },
+			 change(){
+				 this.$refs.mychange.changeModel();
+			 },
 			 // 刷新组件
        reloadcom(){
         this.hackReset = false
@@ -202,10 +272,12 @@
 					if(path.indexOf('/source')!=0&&e=="1-1"){
 						this.clearRoutedate()
 						this.$router.push("/source/source");
+						
 					}
 					if(path.indexOf('/company_name')!=0&&e=="1-2"){
 						this.clearRoutedate()
 						this.$router.push("/company_name");
+						
 					}
 					if(path.indexOf('/use_name')!=0&&e=="1-3"){
 						this.clearRoutedate()
@@ -255,13 +327,17 @@
 						this.clearRoutedate()
 						this.$router.push("/upload_file/order2");
 					}
-					if(path.indexOf('/create-report/create_report')!=0&&e=="3-1"){
+					if(path.indexOf('/create-report')!=0&&e=="3-1"){
 						this.clearRoutedate()
-						this.$router.push("/create-report/create_report");
+						this.$router.push("/create-report/c_month");
 					}
-					if(path.indexOf('/user-manage/userlist')!=0&&e=="4-1"){
-						this.clearRoutedate()
+					if(e=="4-1"){
+						// this.clearRoutedate()
 						this.$router.push("/user-manage/userlist");
+					}
+					if(e=="4-2"){
+						// this.clearRoutedate()
+						this.$router.push("/user-manage/rolelist");
 					}
 				},
 				//刷新菜单高亮不变
@@ -307,11 +383,14 @@
 							if(path.indexOf('/upload_file/order2') == 0){
 								this.activemenu = "2-2"
 							}
-							if(path.indexOf('/create-report/create_report') == 0){
+							if(path.indexOf('/create-report') == 0){
 								this.activemenu = "3-1"
 							}
 							if(path.indexOf('/user-manage/userlist') == 0){
 								this.activemenu = "4-1"
+							}
+							if(path.indexOf('/user-manage/rolelist') == 0){
+								this.activemenu = "4-2"
 							}
 							if(path.indexOf('/user_name') == 0){
 								this.activemenu = "1-12"

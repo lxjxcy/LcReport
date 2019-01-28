@@ -20,27 +20,27 @@ export default new Vuex.Store({
 		 }
 	 },
 	 mutations:{
-		 // å­˜æ¸ é“
+		 // ´æÇşµÀ
 		 setOrder(state, orderSource) {
 		  state.orderSource = orderSource;
 		  sessionStorage.setItem('order', orderSource)
 		},
-		// å­˜token
+		// ´ætoken
 		setToken(state, token) {
 			state.token = token;
 			sessionStorage.setItem('token', token)
 		},
-		// å­˜æ—¥æœŸ
+		// ´æÈÕÆÚ
 		saveDatainfo(state, data) {
 			state.saveData = data;
 			sessionStorage.setItem('saveData', JSON.stringify(data))
 		},
-		//ç”¨æˆ·ä¿¡æ¯
+		//ÓÃ»§ĞÅÏ¢
 		saveUserinfo(state, userInfo) {
 		  state.userInfo = userInfo;
 		  sessionStorage.setItem('userInfo', JSON.stringify(userInfo))
 		},
-		//é€€å‡º
+		//ÍË³ö
 		exitUser(state) {
 		  state.token = null;
 			state.orderSource=null;

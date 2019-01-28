@@ -72,7 +72,6 @@ export default {
 					this.$Message.error(res.data.message);
 				}
 			})
-			
 		},
 		//是否需要重新生成
 		 confirm (url,param,sreachparam) {
@@ -80,15 +79,15 @@ export default {
                     title: '提示',
                     content: '您选择的日期报表数据已存在，是否需要重新生成？',
                     onOk: () => {
-											var removeParam={
-												needRemove:true
-											}
-											var createParam=Object.assign(removeParam,param)
-											this.startCreate(url,createParam)
+						var removeParam={
+							needRemove:true
+						}
+						var createParam=Object.assign(removeParam,param)
+						this.startCreate(url,createParam)
                         // this.removeReport(url,param,searchurl,sreachparam)
                     },
                     onCancel: () => {
-											this.$store.state.loading=false; 
+						this.$store.state.loading=false; 
                     }
                 });
         },

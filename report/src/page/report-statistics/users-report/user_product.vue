@@ -14,7 +14,6 @@
 	import axios from 'axios';
 	import goBack from "../../../components/goBack.vue"
 	import dayTop from "../../../components/day_top.vue"
-import goday from "../../../mixins/goday"
 	export default {
 		name:"second_source",
 		components:{
@@ -30,8 +29,8 @@ import goday from "../../../mixins/goday"
 					pageNum:1,
 					pageSize:10,
 				},
-				tHeader:['商品名称',  '订单数','商品数量','GMV(元)',"销量总额(元)","抵扣总额(元)","实付总额(元)","客单价（元/单）"],
-				filterVal:['orderChildSource', 'orderNum','goodsAmount', "grossMerchandiseVolume","salesTotal","deductionTotal","payAmount","perSales"],
+				tHeader:['下单时间',  '订单ID','商品名称','供应商名称',"商品数量","商品单价(元)","销售额(元)","支付方式","支付时间","订单状态"],
+				filterVal:['orderTime', 'orderId','goodsName', "supplierName","goodsAmount",'goodsPerPrice',"salesTotal","payMode","payTime","status"],
 						columns: [
 							{
 								title: '二级渠道统计报表',
@@ -49,112 +48,155 @@ import goday from "../../../mixins/goday"
 									}
 									},
 									{
+										title: '下单时间',
+										key: 'orderTime',
+										align: 'center',	
+										sortable: 'custom'
+									},
+									{
+										title: '订单ID',
+										key: 'orderId',
+										align: "center",
+									},
+									{
 										title: '商品名称',
-										key: 'orderChildSource',
+										key: 'goodsName',
 										align: 'center',	
 									},
-// 									{
-// 										title: '下单用户数',
-// 										key: 'orderUserNum',
-// 										align: 'center'
-// 									},
 									{
-										title: '订单数',
-										key: 'orderNum',
-										align: "center",
-										sortable: 'custom'
+										title: '供应商名称',
+										key: 'supplierName',
+										align: 'center',	
 									},
 									{
 										title: '商品数量',
 										key: 'goodsAmount',
-										align: "center",
+										align: 'center',	
 										sortable: 'custom'
 									},
 									{
-										title: '销量总额(元)',
+										title: '商品单价(元)',
+										key: 'goodsPerPrice',
+										align: 'center',	
+										sortable: 'custom',
+									},
+									{
+										title: '销售额(元)',
 										key: 'salesTotal',
 										align: "center",
 										sortable: 'custom',
-										render: (h, params) => {
-											var toFix=params.row.salesTotal.toFixed(2)
-											return h('div',{	
-											},toFix)
-										}
 									},
 									{
-										title: '抵扣总额(元)',
-										key: 'deductionTotal',
+										title: '支付方式',
+										key: 'payMode',
 										align: "center",
-										sortable: 'custom',
-										render: (h, params) => {
-											var toFix=params.row.deductibleTotal.toFixed(2)
-											return h('div',{	
-											},toFix)
-										}
 									},
 									{
-										title: '实付总额(元)',
-										key: 'payAmount',
+										title: '支付时间',
+										key: 'payTime',
 										align: "center",
-										sortable: 'custom',
-										render: (h, params) => {
-											var toFix=params.row.payAmount.toFixed(2)
-											return h('div',{	
-											},toFix)
-										}
+										sortable: 'custom'
 									},
+
 									{
-										title: '客单价(元/单)',
-										key: 'perSales',
+										title: '订单状态',
+										key: 'status',
 										align: "center",
-										sortable: 'custom',
-										render: (h, params) => {
-											var toFix=params.row.perSales.toFixed(2)
-											return h('div',{	
-											},toFix)
-										}
+										sortable: 'custom'
 									},
+									
+
 								]
 							}            
 				],
 				
-				data: []
+				data: [],
+				downExceldata:[],
+				
 				
 			}
 		},
-		mixins: [goday],
 		mounted(){
 			this.getlist()
 		},
 		methods:{
 			getlist(){
-				var sendTitle={
-					orderSource:this.$route.query.title,
+				var param={
+					ownerId:this.$route.query.title,
 				}
-				if(this.$store.state.saveData.showDate==1){
-					var url="/report/channel/querySecMonth"
+				var param=Object.assign(param,this.pageParam,this.sortParam)
+				this.$api.getOrderDetails(param).then(res=>{
+						if(res.code==0){
+							this.data=this.filterData(res.data.rows)
+							this.total=res.records;
+						}
+				})			
+				this.columns[0].title=this.$route.query.title+"用户订单详情"
+			},
+			filterData(e){
+				var arr=e
+				for(var i=0;i<arr.length;i++){
+					arr[i]["goodsPerPrice"]=arr[i].goodsPerPrice.toFixed(2);
+					arr[i]["payTime"]=moment(arr[i].payTime).format("YYYY-MM-DD HH:mm:ss");
+					arr[i]["orderTime"]=moment(arr[i].orderTime).format("YYYY-MM-DD HH:mm:ss");
+					arr[i]["salesTotal"]=arr[i].salesTotal.toFixed(2);
 				}
-				if(this.$store.state.saveData.showDate==2){
-					var url="/report/channel/querySecWeek"
-				}
-				
-				var mianTitle="用户商品统计报表"
-				this.getsed(url,mianTitle,sendTitle)
+				return arr;
 			},
 			//下载
-			downExcel(){
-				var sendTitle={
-					orderSource:this.$route.query.title,
-				}
-				if(this.$store.state.saveData.showDate==1){
-					var url="/report/channel/querySecMonth"
-				}
-				if(this.$store.state.saveData.showDate==2){
-					var url="/report/channel/querySecWeek"
-				}
-				var ifdata=false;
-				this.getdownData(url,sendTitle,ifdata)
+
+				downExcel() {
+					var param={
+						ownerId:this.$route.query.title,
+					}
+					var param=Object.assign(param,this.sortParam)
+					this.$api.getOrderDetails(param).then(res=>{
+							if(res.code==0){
+								this.downExceldata=this.filterData(res.data.rows)
+								this.export2Excel()
+							}
+					})		
+		　　	},
+		
+					export2Excel() {
+			　　　　　　require.ensure([], () => {			
+			　　　　　	const { export_json_to_excel } = require('@/vendor/Export2Excel');
+								var data = this.formatJson(this.filterVal, this.downExceldata);
+								var title=this.$route.query.title;
+								export_json_to_excel(this.tHeader, data, title);
+									this.$store.state.loading=false;
+									this.$store.state.loadData=[];
+			　　　　　　})
+			　　　　},
+			　　　　formatJson(filterVal, jsonData) {
+			　　　　　　return jsonData.map(v => filterVal.map(j => v[j]))
+								
+			　　　　},
+
+			
+			changePage(val){
+				this.pageParam.pageNum=val;
+				this.getlist()
 			},
+			//每页显示多少条
+			changeSize(val){
+				this.pageParam.pageSize=val;
+				this.getlist()
+			},
+			//排序
+			startSort(e){
+			if(e.order=="asc"){
+				var action=1
+			}else{
+				var action=0
+			}
+			this.sortParam={
+				action:action,
+				sortField:e.key
+			}
+			
+			this.getlist()
+			}
 			
 		}
 	}

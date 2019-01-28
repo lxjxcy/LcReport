@@ -25,10 +25,70 @@ export default {
 	existReport(params){
 		return post('/report/channel/existReport', params)
 	},
-	//
-	runMonth:"report/shell/runMonth",//生成月报表
-	runWeek:"report/shell/runWeek",//生成周报表
-	runDay:"report/shell/runDay",//生成日报表
+
+//	用户订单详情
+	getOrderDetails(params){
+		return get('/report/userStat/queryOrderDetails', params)
+	},
+	//下载用户excel摸版
+	downloadTemplate(params){
+		return get('/report/userStat/downloadTemplate',params,{responseType: 'blob'})
+	},
+	//生成用户维度报表
+	runUser(params){
+		return post('/report/shell/runUser',params)
+	},
+	//角色列表
+	getRoleList(params){
+		return get('/report/role/queryRoleList',params)
+	},
+	//新增角色
+	addRole(params){
+		return post('/report/role/insertRole',params)
+	},
+	//角色删除修改
+	updateRole(params){
+		return post('/report/role/updateRole',params)
+	},
+	//用户列表
+	getUserList(params){
+		return post('/report/user/queryUserList',params)
+	},
+	//查询用户
+	searchUserlist(params){
+		return get('/report/user/userFuzzyQuery',params)
+	},//查询用户
+	searchRolelist(params){
+		return get('/report/role/roleFuzzyQuery',params)
+	},
+	
+	//注册用户
+	registerUser(params){
+		return get('/report/user/registerUser',params)
+	},
+	//用户修改删除
+	updateUser(params){
+		return post('/report/user/updateUser',params)
+	},
+	//用户、角色查询权限接口
+	getPermission(params){
+		return get('/report/user/queryPermission',params)
+	},
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	//生成日报
+	runMonth:"/report/shell/runMonth",//生成月报表
+	runWeek:"/report/shell/runWeek",//生成周报表
+	runDay:"/report/shell/runDay",//生成日报表
 	//渠道维度
 	channelMonth:"/report/channel/queryMonth",//月
 	channelWeek:"/report/channel/queryWeek",//周
@@ -37,7 +97,6 @@ export default {
 	channelSecMonth:"/report/channel/querySecMonth",//月报二级渠道
 	channelSecWeek:"/report/channel/querySecWeek",//周报二级渠道
 	channelSecOther:"/report/channel/aggregationSecQuery",//任意时段二级渠道
-	
 	
 	//分公司
 	companyMonth:"/report/company/queryMonth",

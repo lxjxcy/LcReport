@@ -1,51 +1,68 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 Vue.use(Router)
+ import home from '@/page/home'
+ import error from '@/page/error'
+//渠道维度
  import order_source from '@/page/report-statistics/source/order_source'
  import second_source from '@/page/report-statistics/source/second_source'
- import home from '@/page/home'
  import day_report from '@/page/report-statistics/source/day_report'
- 
+ //分公司维度
  import company_name from '@/page/report-statistics/branch-company/company_name'
  import company_day from '@/page/report-statistics/branch-company/company_day'
-
  import product_detail from '@/page/report-statistics/branch-company/product_detail'
+ //整合方维度
  import integration from '@/page/report-statistics/integration/integration'
- 
  import integration_day from '@/page/report-statistics/integration/integration_day'
-
  import integration_sec from '@/page/report-statistics/integration/integration_sec'
+ //活动
  import activity_name from '@/page/report-statistics/market-activity/activity_name'
-
+//商品维度
  import product_name from '@/page/report-statistics/product-name/product_name'
  import product_day from '@/page/report-statistics/product-name/product_day'
-
+//项目维度
  import project_name from '@/page/report-statistics/project-name/project_name'
  import project_day from '@/page/report-statistics/project-name/project_day'
-
+//促销商品维度
  import sales_name from '@/page/report-statistics/sales-product/sales_name'
  import sales_day from '@/page/report-statistics/sales-product/sales_day'
-
+//供应商维度
  import supplier_name from '@/page/report-statistics/supplier/supplier_name'
  import supplier_day from '@/page/report-statistics/supplier/supplier_day'
-
+//导入文件
  import shop_stores from '@/page/upload_file/shop_stores'
  import lvcheng_app from '@/page/upload_file/lvcheng_app'
 
- 
+ //应用维度
  import use_name from '@/page/report-statistics/make-use/use_name'
+ //生成报表
  import create_report from '@/page/create-report/create_report'
- 
- 
+ import c_month from '@/page/create-report/c_month'
+ import c_day from '@/page/create-report/c_day'
+ import c_week from '@/page/create-report/c_week'
+ import c_user from '@/page/create-report/c_user'
  import use_day from '@/page/report-statistics/make-use/use_day'
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ //省份维度
  import province_name from '@/page/report-statistics/provinces/province_name'
  import province_day from '@/page/report-statistics/provinces/province_name'
-
+//用户维度
  import user_name from '@/page/report-statistics/users-report/user_name'
  import user_product from '@/page/report-statistics/users-report/user_product'
- 
+ //账户管理
+import userList from '@/page/user-manage/user_List/userList'
+import roleList from '@/page/user-manage/role_List/roleList'
 
 
+// import exercise from '@/page/exercise'
+
+//登录
  import login from '@/page/login/login'
 
 export default new Router({
@@ -54,6 +71,12 @@ export default new Router({
 			path: '/',
 			name: 'login',
 			component:login
+			// component: resolve => require(['@/page/login/login'], resolve),
+		},
+		{
+			path: '/error/:errorcode',
+			name: 'error',
+			component:error
 			// component: resolve => require(['@/page/login/login'], resolve),
 		},
     {
@@ -237,13 +260,15 @@ export default new Router({
 					path:'/user_name',
 					name:'user_name',
 					meta: {Auth: true},
-					component: resolve => require(['@/page/report-statistics/users-report/user_name'], resolve),
+					component:user_name
+					// component: resolve => require(['@/page/report-statistics/users-report/user_name'], resolve),
 				},
 				{
 					path:'/user_name/user_product',
 					name:'user_product',
 					meta: {Auth: true},
-					component: resolve => require(['@/page/report-statistics/users-report/user_product'], resolve),
+					component:user_product
+					// component: resolve => require(['@/page/report-statistics/users-report/user_product'], resolve),
 				},
 				//文件导入
 				{
@@ -262,20 +287,59 @@ export default new Router({
 				},
 				//报表生成
 				{
-					path:'/create-report/create_report',
+					path:'/create-report',
 					name:'create_report',
 					meta: {Auth: true},
-					component:create_report
+					component:create_report,
+					children:[
+						{
+							path:'/create-report/c_day',
+							name:'c_day',
+							meta: {Auth: true},
+							component:c_day
+						},
+						{
+							path:'/create-report/c_month',
+							name:'c_month',
+							meta: {Auth: true},
+							component:c_month
+						},
+						{
+							path:'/create-report/c_week',
+							name:'c_week',
+							meta: {Auth: true},
+							component:c_week
+						},
+						{
+							path:'/create-report/c_user',
+							name:'c_user',
+							meta: {Auth: true},
+							component:c_user
+						},
+					]
 					// component: resolve => require(['@/page/create-report/create_report'], resolve),
 				},
-				//用户管理
+				// 用户管理
+				{
+					path:'/user-manage/userlist',
+					name:'userList',
+					meta: {Auth: true},
+					component:userList
+					// component: resolve => require(['@/page/user-manage/userlist'], resolve),
+				},
+				{
+					path:'/user-manage/rolelist',
+					name:'roleList',
+					meta: {Auth: true},
+					component:roleList
+					// component: resolve => require(['@/page/user-manage/userlist'], resolve),
+				},
 // 				{
-// 					path:'/user-manage/userlist',
-// 					name:'userlist',
-// 					meta: {Auth: true},
-// 					component: resolve => require(['@/page/user-manage/userlist'], resolve),
+// 					path:'/exercise',
+// 					name:'exercise',
+// 					component:exercise
+// 					// component: resolve => require(['@/page/user-manage/userlist'], resolve),
 // 				},
-				
 			]
     }, 
   ]

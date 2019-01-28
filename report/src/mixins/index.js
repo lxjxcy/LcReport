@@ -103,7 +103,12 @@ export default {
 				that.axios.post(url,param).then(res=>{
 						that.loading=false;
 						if(res.data.code==0){
-							this.reportData=that.filterDate(res.data.data.rows)
+							if(res.data.data.length!=0){
+								this.reportData=that.filterDate(res.data.data.rows)
+							}else{
+								this.reportData=[]
+							}
+						
 							that.total=res.data.data.records;
 						}else{
 							that.$Message.error(res.data.message);
@@ -116,7 +121,11 @@ export default {
 						that.loading=false;
 						if(res.data.code==0){
 							
-							this.reportData=that.filterDate(res.data.data.rows)
+							if(res.data.data.length!=0){
+								this.reportData=that.filterDate(res.data.data.rows)
+							}else{
+								this.reportData=[]
+							}
 							
 							that.total=res.data.data.records;
 						}else{
@@ -269,7 +278,12 @@ export default {
 					 
 				 	that.axios.post(url,paramload).then(res=>{
 				 			if(res.data.code==0){
-								this.$store.state.loadData=that.filterDate(res.data.data.rows)
+								if(res.data.data.length!=0){
+									this.$store.state.loadData=that.filterDate(res.data.data.rows)
+								}else{
+									this.$store.state.loadData=[]
+								}
+								// 
 								this.export2Excel()
 				 			}else{
 								that.$store.state.loading=false;
@@ -282,7 +296,11 @@ export default {
 				 		}).then(res=>{
 							console.log(res.data)
 				 			if(res.data.code==0){
+				 			if(res.data.data.length!=0){
 				 				this.$store.state.loadData=that.filterDate(res.data.data.rows)
+				 			}else{
+				 				this.$store.state.loadData=[]
+				 			}
 								this.export2Excel()
 				 			}else{
 								that.$store.state.loading=false;
